@@ -28,7 +28,9 @@ const options = {
       },
     ],
   },
-  apis: ['./src/routes/*.js', './src/controllers/*.js', './src/models/*.js'], //cambiar
+  apis: ['./src/entities/**/*.js', //toma todo los archivos dentro de la carpeta entities
+          '!./src/entities/indexRoutes.js' //omite el archivo indexRoutes
+  ], 
 };
 
 const swaggerDocs = swaggerJsdoc(options);
