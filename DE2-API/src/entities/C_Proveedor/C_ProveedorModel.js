@@ -31,12 +31,6 @@ const Schema = mongoose.Schema;
  *         C_Proveedor_Email:
  *           type: string
  *           description: Email del agente de ventas principal del proveedor
- *         C_Proveedor_Fecha_Registro:
- *           type: Date
- *           description: Fecha de registro del proveedor
- *         C_Proveedor_Fecha_Actualizacion:
- *           type: Date
- *           description: Fecha de actualización del proveedor
  *         C_Proveedor_Estatus:
  *           type: Boolean
  *           description: Estado de activo, inactivo del proveedor
@@ -49,55 +43,40 @@ const Schema = mongoose.Schema;
  *       example:
  *         C_Proveedor_Nombre: Apple
  *         C_Proveedor_Contacto: Juan Ortiz
- *         C_Proveedor_Telefono: 1234567890
+ *         C_Proveedor_Telefono: "1234567890"
  *         C_Proveedor_Direccion: Avenida siglo XXI
  *         C_Proveedor_Email: Apple@gmail.com
- *         C_Proveedor_Fecha_Registro: 2023-02-19T12:34:56Z
- *         C_Proveedor_Fecha_Actualizacion: 2023-02-19T12:34:56Z
- *         C_Proveedor_Estatus: true
- *         C_Proveedor_CreadoPorId: 60d0fe4f5311236168a109cd
- *         C_Proveedor_ActualizadoPorId: 60d0fe4f5311236168a109ce
  */
 
 const C_ProveedorSchema = new Schema({
     C_Proveedor_Nombre: {
         type: String,
-        require: true,
         index: true,
         unique: true,
         maxlength: 30,
+        required: true,
     },
 
     C_Proveedor_Contacto :{
         type: String,
-        require: true,
+        required: true,
     },
 
     C_Proveedor_Telefono :{
         type: String,
-        require: true,
-        match: [/^[0-9]{10}$/, 'El número de teléfono debe tener exactamente 10 dígitos numéricos']
+        match: [/^[0-9]{10}$/, 'El número de teléfono debe tener exactamente 10 dígitos numéricos'],
+        required: true,
     },
 
     C_Proveedor_Direccion :{
         type: String,
-        require: true,
         maxlength: 30,
+        required: true,
     },
 
     C_Proveedor_Email :{
         type: String,
-        require: true,
-    },
-
-    C_Proveedor_Fecha_Registro :{
-        type: Date,
-        default: Date.now(),
-    },
-
-    C_Proveedor_Fecha_Actualizacion :{
-        type: Date,
-        default:Date.now(),
+        required: true,
     },
 
     C_Proveedor_Estatus :{
@@ -115,7 +94,7 @@ const C_ProveedorSchema = new Schema({
         ref: 'Usuario'
     },
 },{
-    timestamps: { C_Proveedor_CreadoPorId: 'creado', C_Proveedor_ActualizadoPorId: 'actualizado' },
+    timestamps: true
 });
 
 const Proveedor = mongoose.model('Proveedor', C_ProveedorSchema);
