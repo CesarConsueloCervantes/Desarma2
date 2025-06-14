@@ -2,6 +2,8 @@ const express = require('express');
 
 const router = express.Router();
 
-//agregar los archivos de las rutas
+const proveedorRoutes = require('./C_Proveedor/C_ProveedorRoutes');
+
+router.use(proveedorRoutes);
 
 module.exports = router;
