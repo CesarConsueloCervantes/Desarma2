@@ -17,6 +17,8 @@ async function main(){
         swaggerMiddleware(app);
         app.use(errorHandler);
 
+        app.use(express.json());
+
         app.get('/', (req, res) => {
             res.send('Bienvenido a API de Desarma2');
         });
