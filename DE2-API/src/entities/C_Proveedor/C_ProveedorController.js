@@ -2,7 +2,7 @@ const Proveedor = require("../C_Proveedor/C_ProveedorModel")
 
 /**
  * @swagger
- * /proveedores:
+ * /proveedor:
  *   get:
  *     summary: Obtiene todos los proveedores
  *     tags: [Proveedor]
