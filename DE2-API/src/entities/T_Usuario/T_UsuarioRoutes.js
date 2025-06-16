@@ -20,116 +20,118 @@ router.get('/usuario/:id', [
 
 //este es la ruta para crear un usuario
 router.post('/usuario', [
-    check('T_Usuario_Password')
+  body('T_Usuario_Password')
     .exists({ checkFalsy: true }).withMessage('La contraseña es obligatoria')
-    .isLength({ max: 20, min: 8 }).withMessage('La contraseña no debe exceder los 20 caracteres'),
+    .isLength({ max: 20, min: 8 }).withMessage('La contraseña deve tener entre 8 y 20 caracteres'),
 
-  check('T_Usuario_Nombre')
+  body('T_Usuario_Nombre')
     .exists({ checkFalsy: true }).withMessage('El nombre es obligatorio')
     .isLength({ max: 30 }).withMessage('El nombre no debe exceder los 30 caracteres'),
 
-  check('T_Usuario_Apellido')
+  body('T_Usuario_Apellido')
     .exists({ checkFalsy: true }).withMessage('El apellido es obligatorio')
     .isLength({ max: 30 }).withMessage('El apellido no debe exceder los 30 caracteres'),
 
-  check('C_Proveedor_Telefono')
+  body('T_Usuario_Telefono')
     .exists({ checkFalsy: true }).withMessage('El teléfono es obligatorio')
-    .matches(/^[0-9]{10}$/).withMessage('El número de teléfono debe tener exactamente 10 dígitos'),
+    .matches(/^[0-9]{10}$/).withMessage('El teléfono debe tener exactamente 10 dígitos numéricos'),
 
-  check('T_Usuario_Email')
+  body('T_Usuario_Email')
     .exists({ checkFalsy: true }).withMessage('El email es obligatorio')
     .isEmail().withMessage('Debe ser un email válido'),
 
-  check('T_Usuario_Rol')
-    .exists({ checkFalsy: true }).withMessage('El rol es obligatorio')
-    .isIn(['cliente', 'administrador']).withMessage('Rol no válido'),
-
-  check('T_Usuario_Estado')
-    .exists({ checkFalsy: true }).withMessage('El estado es obligatorio')
-    .isBoolean().withMessage('El estado debe ser booleano'),
-
   // Campos opcionales con validaciones
-  check('T_Usuario_Direccion_Calle')
+  body('T_Usuario_Direccion_Calle')
     .optional()
     .isLength({ max: 30 }).withMessage('La calle no debe exceder los 30 caracteres'),
 
-  check('T_Usuario_Direccion_Fraccionamiento')
+  body('T_Usuario_Direccion_Fraccionamiento')
     .optional()
     .isLength({ max: 40 }).withMessage('El fraccionamiento no debe exceder los 40 caracteres'),
 
-  check('T_Usuario_Direccion_CP')
+  body('T_Usuario_Direccion_CP')
     .optional()
     .isLength({ max: 6 }).withMessage('El código postal no debe exceder los 6 caracteres'),
 
-  check('T_Usuario_Direccion_Ciudad')
+  body('T_Usuario_Direccion_Ciudad')
     .optional()
     .isLength({ max: 20 }).withMessage('La ciudad no debe exceder los 20 caracteres'),
 
-  check('T_Usuario_Direccion_ProvinciaEstado')
+  body('T_Usuario_Rol')
+    .optional()
+    .isIn(['cliente', 'administrador']).withMessage('Rol no válido'),  
+
+  body('T_Usuario_Estado')
+    .optional()
+    .isBoolean().withMessage('El estado debe ser booleano'),
+/*
+  body('T_Usuario_Direccion_ProvinciaEstado')
     .optional()
     .isMongoId().withMessage('Provincia/Estado debe ser un ID válido'),
 
-  check('T_Usuario_Direccion_Pais')
+  body('T_Usuario_Direccion_Pais')
     .optional()
     .isMongoId().withMessage('El país debe ser un ID válido')
+    */
 ],validate, usuarioController.postUsuario)
 
 
 //este es la ruta para actualizar un usuario
 router.put('/usuario/:id', [
     param('id').isMongoId().withMessage('Invalid Usuario ID'),
-    check('T_Usuario_Password')
+  body('T_Usuario_Password')
     .exists({ checkFalsy: true }).withMessage('La contraseña es obligatoria')
-    .isLength({ max: 20 }).withMessage('La contraseña no debe exceder los 20 caracteres'),
+    .isLength({ max: 20, min: 8 }).withMessage('La contraseña deve tener entre 8 y 20 caracteres'),
 
-  check('T_Usuario_Nombre')
+  body('T_Usuario_Nombre')
     .exists({ checkFalsy: true }).withMessage('El nombre es obligatorio')
     .isLength({ max: 30 }).withMessage('El nombre no debe exceder los 30 caracteres'),
 
-  check('T_Usuario_Apellido')
+  body('T_Usuario_Apellido')
     .exists({ checkFalsy: true }).withMessage('El apellido es obligatorio')
     .isLength({ max: 30 }).withMessage('El apellido no debe exceder los 30 caracteres'),
 
-  check('C_Proveedor_Telefono')
+  body('T_Usuario_Telefono')
     .exists({ checkFalsy: true }).withMessage('El teléfono es obligatorio')
-    .matches(/^[0-9]{10}$/).withMessage('El número de teléfono debe tener exactamente 10 dígitos'),
+    .matches(/^[0-9]{10}$/).withMessage('El teléfono debe tener exactamente 10 dígitos numéricos'),
 
-  check('T_Usuario_Email')
+  body('T_Usuario_Email')
     .exists({ checkFalsy: true }).withMessage('El email es obligatorio')
     .isEmail().withMessage('Debe ser un email válido'),
 
-  check('T_Usuario_Rol')
-    .exists({ checkFalsy: true }).withMessage('El rol es obligatorio')
-    .isIn(['cliente', 'administrador']).withMessage('Rol no válido'),
-
-  check('T_Usuario_Estado')
-    .exists({ checkFalsy: true }).withMessage('El estado es obligatorio')
-    .isBoolean().withMessage('El estado debe ser booleano'),
-
   // Campos opcionales con validaciones
-  check('T_Usuario_Direccion_Calle')
+  body('T_Usuario_Direccion_Calle')
     .optional()
     .isLength({ max: 30 }).withMessage('La calle no debe exceder los 30 caracteres'),
 
-  check('T_Usuario_Direccion_Fraccionamiento')
+  body('T_Usuario_Direccion_Fraccionamiento')
     .optional()
     .isLength({ max: 40 }).withMessage('El fraccionamiento no debe exceder los 40 caracteres'),
 
-  check('T_Usuario_Direccion_CP')
+  body('T_Usuario_Direccion_CP')
     .optional()
     .isLength({ max: 6 }).withMessage('El código postal no debe exceder los 6 caracteres'),
 
-  check('T_Usuario_Direccion_Ciudad')
+  body('T_Usuario_Direccion_Ciudad')
     .optional()
     .isLength({ max: 20 }).withMessage('La ciudad no debe exceder los 20 caracteres'),
 
-  check('T_Usuario_Direccion_ProvinciaEstado')
+  body('T_Usuario_Rol')
+    .optional()
+    .isIn(['cliente', 'administrador']).withMessage('Rol no válido'),  
+
+  body('T_Usuario_Estado')
+    .optional()
+    .isBoolean().withMessage('El estado debe ser booleano'),
+/*
+  body('T_Usuario_Direccion_ProvinciaEstado')
     .optional()
     .isMongoId().withMessage('Provincia/Estado debe ser un ID válido'),
 
-  check('T_Usuario_Direccion_Pais')
+  body('T_Usuario_Direccion_Pais')
     .optional()
     .isMongoId().withMessage('El país debe ser un ID válido')
+    */
 ],validate, usuarioController.putUsuario)
 
 
