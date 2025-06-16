@@ -7,7 +7,7 @@ const authMiddleware = require('../../middlewares/authMiddlewares');
 const router = express.Router();
 
 //este es la ruta para obetener todos los proveedores
-router.get('/proveedores', [
+router.get('/proveedor', [
   query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
   query('limit').optional().isInt({ min: 1 }).withMessage('Limit must be a positive integer'),
 ], validate, proveedorController.getProveedores);
