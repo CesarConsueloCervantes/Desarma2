@@ -37,7 +37,7 @@ const Schema = mongoose.Schema;
  *         C_Proveedor_CreadoPorId:
  *           type: string
  *           description: El Id del usuario que creo al proveedor
- *         updatedById:
+ *         C_Proveedor_ActualizadoPor:
  *           type: string
  *           description: El Id del usuario que actualizo al proveedor
  *       example:
@@ -46,6 +46,9 @@ const Schema = mongoose.Schema;
  *         C_Proveedor_Telefono: "1234567890"
  *         C_Proveedor_Direccion: Avenida siglo XXI
  *         C_Proveedor_Email: Apple@gmail.com
+ *         C_Proveedor_Estatus: true
+ *         C_Proveedor_CreadoPor: 60d0fe4f5311236168a109cd
+ *         C_Proveedor_ActualizadoPor: 60d0fe4f5311236168a109cd
  */
 
 const C_ProveedorSchema = new Schema({
@@ -84,12 +87,12 @@ const C_ProveedorSchema = new Schema({
         default: true
     },
 
-    C_Proveedor_CreadoPorId: {
+    C_Proveedor_CreadoPor: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario'
     },
 
-    C_Proveedor_ActualizadoPorId: {
+    C_Proveedor_ActualizadoPor: {
         type: Schema.Types.ObjectId,
         ref: 'Usuario'
     },
