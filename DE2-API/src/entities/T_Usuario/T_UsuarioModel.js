@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
  * @swagger
  * components:
  *   schemas:
- *     Proveedor:
+ *     Usuario:
  *       type: object
  *       required:
  *         - T_Usuario_Password
@@ -57,7 +57,7 @@ const Schema = mongoose.Schema;
  *           type: Boolean
  *           description: Estado del usuario
  *       example:
- *         T_Usuario_Password: 1234d
+ *         T_Usuario_Password: 12345678d
  *         T_Usuario_Nombre: Juan
  *         T_Usuario_Apellido: Ortiz
  *         T_Usuario_Telefono: "1234567890"
@@ -93,7 +93,7 @@ const usuarioSchema = Schema({
     maxlength: 30
   },
 
-  C_Proveedor_Telefono :{
+  T_Usuario_Telefono :{
     type: String,
     match: [/^[0-9]{10}$/, 'El número de teléfono debe tener exactamente 10 dígitos numéricos'],
     required: true,
@@ -122,7 +122,7 @@ const usuarioSchema = Schema({
     maxlength: 20,
     default: null
   },
-
+  /*
   T_Usuario_Direccion_ProvinciaEstado: {
     type: Schema.Types.ObjectId,
     maxlength: 20,
@@ -130,10 +130,11 @@ const usuarioSchema = Schema({
   },
 
   T_Usuario_Direccion_Pais: {
-    type: Schema.Rypes.ObjectId,
+    type: Schema.Types.ObjectId,
     maxlength: 20,
     ref: "Pais",
   },
+  */
 
   T_Usuario_Email: {
     type: String,
