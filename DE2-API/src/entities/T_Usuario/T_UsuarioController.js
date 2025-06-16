@@ -2,7 +2,7 @@ const Usuario = require('../T_Usuario/T_UsuarioModel')
 
 /**
  * @swagger
- * /usuarios:
+ * /usuario:
  *   get:
  *     summary: Obtiene todos los Usuarios
  *     tags: [Usuario]
