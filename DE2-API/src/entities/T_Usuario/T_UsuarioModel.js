@@ -70,8 +70,6 @@ const Schema = mongoose.Schema;
  *         T_Usuario_Email: juan@email.com
  *         T_Usuario_Rol: cliente
  *         T_Usuario_Estado: true
- *         T_Usuario_CreadoPorId: 60d0fe4f5311236168a109cd
- *         T_Usuario_ActualizadoPorId: 60d0fe4f5311236168a109cd
  */
 
 const usuarioSchema = Schema({
@@ -154,16 +152,6 @@ const usuarioSchema = Schema({
     type: Boolean,
     required: true,
     default: false
-  },
-
-  T_Usuario_CreadoPorId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Usuario'
-  },
-
-  T_Usuario_ActualizadoPorId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Usuario'
   },
 
 },{
