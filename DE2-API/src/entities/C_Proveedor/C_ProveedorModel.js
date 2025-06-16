@@ -80,6 +80,7 @@ const C_ProveedorSchema = new Schema({
     C_Proveedor_Email :{
         type: String,
         required: true,
+        unique: true
     },
 
     C_Proveedor_Estatus :{
