@@ -79,15 +79,13 @@ router.put('/proveedor/:id', [
     .isEmail().withMessage('El email debe ser válido')
     .normalizeEmail(),
 
-/*
-  body('C_Proveedor_CreadoPorId')
+  body('C_Proveedor_CreadoPor')
     .exists({ checkFalsy: true }).withMessage('C_Proveedor_CreadoPorId es obligatorio')
     .isMongoId().withMessage('C_Proveedor_CreadoPorId debe ser un ID válido'),
   
-  body('C_Proveedor_ActualizadoPorId')
+  body('C_Proveedor_ActualizadoPor')
     .exists({ checkFalsy: true }).withMessage('C_Proveedor_ActualizadoPorId es obligatorio')
     .isMongoId().withMessage('C_Proveedor_ActualizadoPorId debe ser un ID válido'),
-*/
 
 ], validate, proveedorController.putProveedor);
 
