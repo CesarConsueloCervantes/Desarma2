@@ -41,7 +41,7 @@ router.post('/proveedor', [
     .exists({ checkFalsy: true }).withMessage('El email es obligatorio')
     .isEmail().withMessage('El email debe ser válido')
     .normalizeEmail(),
-/*
+
   body('C_Proveedor_CreadoPorId')
     .exists({ checkFalsy: true }).withMessage('C_Proveedor_CreadoPorId es obligatorio')
     .isMongoId().withMessage('C_Proveedor_CreadoPorId debe ser un ID válido'),
@@ -49,7 +49,7 @@ router.post('/proveedor', [
   body('C_Proveedor_ActualizadoPorId')
     .exists({ checkFalsy: true }).withMessage('C_Proveedor_ActualizadoPorId es obligatorio')
     .isMongoId().withMessage('C_Proveedor_ActualizadoPorId debe ser un ID válido'),
-*/
+
 
 ], validate, proveedorController.postProveedor);
 
