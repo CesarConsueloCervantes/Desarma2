@@ -30,7 +30,7 @@ router.post('/pais', [
   body('C_Pais_Estatus')
     .optional()
     .isBoolean().withMessage('El estatus debe ser un valor booleano (true o false)')
-],validate, usuarioController.postUsuario);
+],validate, paisController.postPais);
 
 router.put('/pais/:id', [
   body('C_Pais_Nombre')
@@ -44,7 +44,7 @@ router.put('/pais/:id', [
   body('C_Pais_Estatus')
     .optional()
     .isBoolean().withMessage('El estatus debe ser un valor booleano (true o false)')
-],vlaidate, paisController.putPais);
+],validate, paisController.putPais);
 
 //este es la ruta para borrar un Usuario
 router.delete('/pais/:id', [
