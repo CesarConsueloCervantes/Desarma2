@@ -7,7 +7,7 @@ const authMiddleware = require('../../middlewares/authMiddlewares');
 const router = express.Router();
 
 //este es la ruta para obetener todos los proveedores
-router.get('/proveedores', [
+router.get('/proveedor', [
   query('page').optional().isInt({ min: 1 }).withMessage('Page must be a positive integer'),
   query('limit').optional().isInt({ min: 1 }).withMessage('Limit must be a positive integer'),
 ], validate, proveedorController.getProveedores);
@@ -41,15 +41,15 @@ router.post('/proveedor', [
     .exists({ checkFalsy: true }).withMessage('El email es obligatorio')
     .isEmail().withMessage('El email debe ser válido')
     .normalizeEmail(),
-/*
-  body('C_Proveedor_CreadoPorId')
+
+  body('C_Proveedor_CreadoPor')
     .exists({ checkFalsy: true }).withMessage('C_Proveedor_CreadoPorId es obligatorio')
     .isMongoId().withMessage('C_Proveedor_CreadoPorId debe ser un ID válido'),
   
-  body('C_Proveedor_ActualizadoPorId')
+  body('C_Proveedor_ActualizadoPor')
     .exists({ checkFalsy: true }).withMessage('C_Proveedor_ActualizadoPorId es obligatorio')
     .isMongoId().withMessage('C_Proveedor_ActualizadoPorId debe ser un ID válido'),
-*/
+
 
 ], validate, proveedorController.postProveedor);
 
