@@ -18,7 +18,7 @@ const Paqueteria = require('./C_PaqueteriaModel')
  */
 exports.getPaqueterias = async (req, res, next) => {
   try {
-    const Paqueterias = await Paqueteria.find();
+    const paqueterias = await Paqueteria.find();
     res.status(200).send(paqueterias);
   } catch (error) {
     next(error);
