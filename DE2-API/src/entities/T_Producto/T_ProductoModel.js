@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
  * @swagger
  * components:
  *   schemas:
- *     Product:
+ *     Producto:
  *       type: object
  *       required:
  *         - T_Producto_Nombre
