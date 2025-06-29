@@ -31,7 +31,7 @@ const Schema = mongoose.Schema;
  *           type: Boolean
  *           description: Estado de la transacción (define si fue cancelada)
  *       example:
- *         T_Venta_id: 60d0fe4f5311236168a109cd
+ *         T_RegistroGeneral_Venta_id: 60d0fe4f5311236168a109cd
  *         T_RegistroGeneral_Producto_id: 60d0fe4f5311236168a109cd
  *         T_RegistroGeneral_Cantidad: 1234
  *         T_RegistroGeneral_Producto_Precio: 1234567890
