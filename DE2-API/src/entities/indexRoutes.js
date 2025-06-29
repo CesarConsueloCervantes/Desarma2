@@ -8,6 +8,7 @@ const paisRoutes = require('./C_Pais/C_PaisRoutes');
 const estadoProvinciaRoutes = require('./C_EstadoProvincia/C_EstadoProvinciaRoutes');
 const paqueteriaRoutes = require('./C_Paqueteria/C_PaqueteriaRoutes')
 const productoRoutes = require('./T_Producto/T_ProductoRoutes')
+const registroGeneralRoutes = require('./T_RegistroGeneral_Venta/T_RegistroGeneral_VentaRoutes')
 
 router.use(proveedorRoutes);
 router.use(usuarioRoutes);
@@ -15,5 +16,6 @@ router.use(paisRoutes);
 router.use(estadoProvinciaRoutes);
 router.use(paqueteriaRoutes);
 router.use(productoRoutes);
+router.use(registroGeneralRoutes);
 
 module.exports = router;
