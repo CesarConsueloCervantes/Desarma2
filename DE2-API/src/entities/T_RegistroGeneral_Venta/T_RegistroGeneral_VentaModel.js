@@ -6,16 +6,16 @@ const Schema = mongoose.Schema;
  * @swagger
  * components:
  *   schemas:
- *     RegistroGeneral:
+ *     RegistroGeneralVenta:
  *       type: object
  *       required:
- *         - T_RegistroGeneral_Venta_id
+ *         - T_Venta_id
  *         - T_RegistroGeneral_Producto_id
  *         - T_RegistroGeneral_Cantidad
  *         - T_RegistroGeneral_Producto_Precio
  *         - T_RegistroGeneral_Estatus
  *       properties:
- *         T_RegistroGeneral_Venta_id:
+ *         T_Venta_id:
  *           type: string
  *           description: Código que liga esta venta individual con una venta eng eneral
  *         T_RegistroGeneral_Producto_id:
@@ -31,7 +31,7 @@ const Schema = mongoose.Schema;
  *           type: Boolean
  *           description: Estado de la transacción (define si fue cancelada)
  *       example:
- *         T_RegistroGeneral_Venta_id: 60d0fe4f5311236168a109cd
+ *         T_Venta_id: 60d0fe4f5311236168a109cd
  *         T_RegistroGeneral_Producto_id: 60d0fe4f5311236168a109cd
  *         T_RegistroGeneral_Cantidad: 1234
  *         T_RegistroGeneral_Producto_Precio: 1234567890
@@ -40,7 +40,7 @@ const Schema = mongoose.Schema;
 
 const registrogeneralSchema = Schema({
     /*
-    T_RegistroGeneral_Venta_id: {
+    T_Venta_id: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: "Venta"
@@ -76,6 +76,6 @@ const registrogeneralSchema = Schema({
     timestamps: true
 });
 
-const RegistroGeneral =  mongoose.model('RegistroGeneral', registrogeneralSchema);
+const RegistroGeneralVenta =  mongoose.model('RegistroGeneralVenta', registrogeneralSchema);
 
-module.exports = RegistroGeneral;
+module.exports = RegistroGeneralVenta;
