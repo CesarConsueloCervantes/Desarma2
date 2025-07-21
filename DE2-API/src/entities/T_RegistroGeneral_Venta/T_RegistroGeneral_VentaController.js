@@ -1,24 +1,24 @@
-const RegistroGeneral = require('./T_RegistroGeneral_VentaModel')
+const RegistroGeneralVenta = require('./T_RegistroGeneral_VentaModel')
 
 /**
  * @swagger
- * /registro_general:
+ * /registro_general_venta:
  *   get:
- *     summary: Obtiene todos los Registros Generales
- *     tags: [RegistroGeneral]
+ *     summary: Obtiene todos los RegistroGeneralVentas
+ *     tags: [RegistroGeneralVenta]
  *     responses:
  *       200:
- *         description: La tabla de los Registros Generales
+ *         description: La tabla de los RegistroGeneralVentas
  *         content:
  *           application/json:
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/RegistroGeneral'
+ *                 $ref: '#/components/schemas/RegistroGeneralVenta'
  */
-exports.getRegistrosGenerales = async (req, res, next) => {
+exports.getRegistroGeneralVentas = async (req, res, next) => {
   try {
-    const registroGenerals = await RegistroGeneral.find();
+    const registroGenerals = await RegistroGeneralVenta.find();
     res.status(200).send(registroGenerals);
   } catch (error) {
     next(error);
@@ -27,32 +27,32 @@ exports.getRegistrosGenerales = async (req, res, next) => {
 
 /**
  * @swagger
- * /registro_general/{id}:
+ * /registro_general_venta/{id}:
  *   get:
- *     summary: Obtiene RegistroGeneral por ID
- *     tags: [RegistroGeneral]
+ *     summary: Obtiene RegistroGeneralVenta por ID
+ *     tags: [RegistroGeneralVenta]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
- *         description: La Id del RegistroGeneral
+ *         description: La Id del RegistroGeneralVenta
  *     responses:
  *       200:
- *         description: La descripcion del RegistroGeneral por Id
+ *         description: La descripcion del RegistroGeneralVenta por Id
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/RegistroGeneral'
+ *               $ref: '#/components/schemas/RegistroGeneralVenta'
  *       404:
- *         description: RegistroGeneral no encontrado
+ *         description: RegistroGeneralVenta no encontrado
  */
-exports.getRegistroGeneralPorID = async (req, res, next) => {
+exports.getRegistroGeneralVentaPorID = async (req, res, next) => {
   try {
-    const registroGeneral = await RegistroGeneral.findById(req.params.id);
+    const registroGeneral = await RegistroGeneralVenta.findById(req.params.id);
     if (!registroGeneral) {
-      res.status(404).json({ message: 'RegistroGeneral no encontrado' });
+      res.status(404).json({ message: 'RegistroGeneralVenta no encontrado' });
     } else {
       res.status(200).send(registroGeneral);
     }
@@ -63,29 +63,29 @@ exports.getRegistroGeneralPorID = async (req, res, next) => {
 
 /**
  * @swagger
- * /registro_general:
+ * /registro_general_venta:
  *   post:
- *     summary: Crea una nueva RegistroGeneral
- *     tags: [RegistroGeneral]
+ *     summary: Crea un nuevo RegistroGeneralVenta
+ *     tags: [RegistroGeneralVenta]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/RegistroGeneral'
+ *             $ref: '#/components/schemas/RegistroGeneralVenta'
  *     responses:
  *       201:
- *         description: RegistroGeneral creado exitosamente
+ *         description: RegistroGeneralVenta creado exitosamente
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/RegistroGeneral'
+ *               $ref: '#/components/schemas/RegistroGeneralVenta'
  *       500:
  *         description: Some server error
  */
-exports.postRegistroGeneral = async (req, res, next) => {
+exports.postRegistroGeneralVenta = async (req, res, next) => {
   try {
-    const registroGeneral = new RegistroGeneral(req.body);
+    const registroGeneral = new RegistroGeneralVenta(req.body);
     await registroGeneral.save();
     res.status(201).send(registroGeneral);
   } catch (error) {
@@ -97,40 +97,40 @@ exports.postRegistroGeneral = async (req, res, next) => {
 
 /**
  * @swagger
- * /registro_general/{id}:
+ * /registro_general_venta/{id}:
  *   put:
- *     summary: Actualiza una RegistroGeneral por ID
- *     tags: [RegistroGeneral]
+ *     summary: Actualiza un RegistroGeneralVenta por ID
+ *     tags: [RegistroGeneralVenta]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
- *         description: EL Id del RegistroGeneral
+ *         description: EL Id del RegistroGeneralVenta
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/RegistroGeneral'
+ *             $ref: '#/components/schemas/RegistroGeneralVenta'
  *     responses:
  *       200:
- *         description: RegistroGeneral se actualizo
+ *         description: RegistroGeneralVenta se actualizo
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/RegistroGeneral'
+ *               $ref: '#/components/schemas/RegistroGeneralVenta'
  *       404:
- *         description: RegistroGeneral no encontrado
+ *         description: RegistroGeneralVenta no encontrado
  *       500:
  *         description: Some server error
  */
-exports.putRegistroGeneral = async (req, res, next) => {
+exports.putRegistroGeneralVenta = async (req, res, next) => {
   try {
-    const registroGeneral = await RegistroGeneral.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const registroGeneral = await RegistroGeneralVenta.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!registroGeneral) {
-      res.status(404).json({ message: 'RegistroGeneral no encontrado' });
+      res.status(404).json({ message: 'RegistroGeneralVenta no encontrado' });
     } else {
       res.status(200).send(registroGeneral);
     }
@@ -141,28 +141,28 @@ exports.putRegistroGeneral = async (req, res, next) => {
 
 /**
  * @swagger
- * /registro_general/{id}:
+ * /registro_general_venta/{id}:
  *   delete:
- *     summary: Elimina una RegistroGeneral por ID
- *     tags: [RegistroGeneral]
+ *     summary: Elimina un RegistroGeneralVenta por ID
+ *     tags: [RegistroGeneralVenta]
  *     parameters:
  *       - in: path
  *         name: id
  *         schema:
  *           type: string
  *         required: true
- *         description: El Id de la RegistroGeneral
+ *         description: El Id del RegistroGeneralVenta
  *     responses:
  *       200:
- *         description: RegistroGeneral se elimino
+ *         description: RegistroGeneralVenta se elimino
  *       404:
- *         description: RegistroGeneral no encontrado
+ *         description: RegistroGeneralVenta no encontrado
  */
-exports.deleteRegistroGeneral = async (req, res, next) => {
+exports.deleteRegistroGeneralVenta = async (req, res, next) => {
   try {
-    const registroGeneral = await RegistroGeneral.findByIdAndDelete(req.params.id);
+    const registroGeneral = await RegistroGeneralVenta.findByIdAndDelete(req.params.id);
     if (!registroGeneral) {
-      res.status(404).json({ message: 'RegistroGeneral no encontrado' });
+      res.status(404).json({ message: 'RegistroGeneralVenta no encontrado' });
     } else {
       res.status(204).send();
     }
