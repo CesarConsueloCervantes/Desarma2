@@ -57,7 +57,7 @@ const Schema = mongoose.Schema;
  *           type: Boolean
  *           description: Estado del usuario
  *       example:
- *         T_Usuario_Password: String
+ *         T_Usuario_Password: "12345678-20"
  *         T_Usuario_Nombre: String
  *         T_Usuario_Apellido: String
  *         T_Usuario_Telefono: "1234567890"
@@ -67,7 +67,7 @@ const Schema = mongoose.Schema;
  *         T_Usuario_Direccion_Ciudad: String
  *         T_Usuario_Direccion_ProvinciaEstado: 60d0fe4f5311236168a109cd
  *         T_Usuario_Direccion_Pais: 60d0fe4f5311236168a109cd
- *         T_Usuario_Email: String
+ *         T_Usuario_Email: String@String.com
  *         T_Usuario_Rol: cliente
  *         T_Usuario_Estado: true
  */
