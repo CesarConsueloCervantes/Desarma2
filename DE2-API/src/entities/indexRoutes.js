@@ -12,6 +12,7 @@ const registroGeneralRoutes = require('./T_RegistroGeneral_Venta/T_RegistroGener
 const compraRoutes = require('./T_Compra/T_CompraRoutes');
 const envioRoutes = require('./T_Envio/T_EvioRoutes');
 const ventaRoutes = require('./T_Venta/T_VentaRoutes');
+const registroGeneralCompraRoutes = require('./T_RegistroGeneral_Compra/T_ReditroGeneral_CompraRoutes');
 
 router.use(proveedorRoutes);
 router.use(usuarioRoutes);
@@ -23,5 +24,6 @@ router.use(registroGeneralRoutes);
 router.use(compraRoutes);
 router.use(envioRoutes);
 router.use(ventaRoutes);
+router.use(registroGeneralCompraRoutes);
 
 module.exports = router;
