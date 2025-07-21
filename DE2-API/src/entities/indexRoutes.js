@@ -12,7 +12,7 @@ const registroGeneralRoutes = require('./T_RegistroGeneral_Venta/T_RegistroGener
 const compraRoutes = require('./T_Compra/T_CompraRoutes');
 const envioRoutes = require('./T_Envio/T_EvioRoutes');
 const ventaRoutes = require('./T_Venta/T_VentaRoutes');
-const registroGeneralCompraRoutes = require('./T_RegistroGeneral_Compra/T_ReditroGeneral_CompraRoutes');
+const registroGeneralCompraRoutes = require('./T_RegistroGeneral_Compra/T_RegistroGeneral_CompraRoutes');
 
 router.use(proveedorRoutes);
 router.use(usuarioRoutes);
