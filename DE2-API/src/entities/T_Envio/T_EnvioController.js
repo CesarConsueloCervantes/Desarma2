@@ -8,7 +8,7 @@ const Envio = require('./T_EnvioModel')
  *     tags: [Envio]
  *     responses:
  *       200:
- *         description: El catalogo de las Envios
+ *         description: La tabla de las Envios
  *         content:
  *           application/json:
  *             schema:

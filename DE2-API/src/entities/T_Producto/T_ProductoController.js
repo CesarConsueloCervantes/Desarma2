@@ -8,7 +8,7 @@ const Producto = require('./T_ProductoModel')
  *     tags: [Producto]
  *     responses:
  *       200:
- *         description: El catalogo de los Productos
+ *         description: La tabla de los Productos
  *         content:
  *           application/json:
  *             schema:
