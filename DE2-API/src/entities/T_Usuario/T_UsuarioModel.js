@@ -57,17 +57,17 @@ const Schema = mongoose.Schema;
  *           type: Boolean
  *           description: Estado del usuario
  *       example:
- *         T_Usuario_Password: 12345678d
- *         T_Usuario_Nombre: Juan
- *         T_Usuario_Apellido: Ortiz
+ *         T_Usuario_Password: String
+ *         T_Usuario_Nombre: String
+ *         T_Usuario_Apellido: String
  *         T_Usuario_Telefono: "1234567890"
- *         T_Usuario_Direccion_Calle: Avenida siglo XXI
- *         T_Usuario_Direccion_Fraccionamiento: Lindavista
- *         T_Usuario_Direccion_CP: 29833
- *         T_Usuario_Direccion_Ciudad: Aguascalientes
+ *         T_Usuario_Direccion_Calle: String
+ *         T_Usuario_Direccion_Fraccionamiento: String
+ *         T_Usuario_Direccion_CP: String
+ *         T_Usuario_Direccion_Ciudad: String
  *         T_Usuario_Direccion_ProvinciaEstado: 60d0fe4f5311236168a109cd
  *         T_Usuario_Direccion_Pais: 60d0fe4f5311236168a109cd
- *         T_Usuario_Email: juan@email.com
+ *         T_Usuario_Email: String
  *         T_Usuario_Rol: cliente
  *         T_Usuario_Estado: true
  */
@@ -122,7 +122,7 @@ const usuarioSchema = Schema({
     maxlength: 20,
     default: null
   },
-  /*
+
   T_Usuario_Direccion_ProvinciaEstado: {
     type: Schema.Types.ObjectId,
     maxlength: 20,
@@ -134,7 +134,6 @@ const usuarioSchema = Schema({
     maxlength: 20,
     ref: "Pais",
   },
-  */
 
   T_Usuario_Email: {
     type: String,
