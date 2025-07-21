@@ -39,13 +39,11 @@ const Schema = mongoose.Schema;
  */
 
 const registrogeneralSchema = Schema({
-    /*
     T_Venta_id: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: "Venta"
     },
-    */
     
     T_RegistroGeneral_Producto_id: {
         type: Schema.Types.ObjectId,
