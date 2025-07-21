@@ -19,12 +19,11 @@ router.get('/envio/:id', [
 
 //este es la ruta para crear una envio
 router.post('/envio', [
-  /*
+
   // Venta_id 
   body('T_Envio_Venta_id')
     .exists({ checkFalsy: true }).withMessage('El ID de la venta es obligatorio')
     .isMongoId().withMessage('Debe ser un ObjectId válido'),
-  */
 
   // T_Envio_Servicio_Paqueteria_id: ObjectId requerido
   body('T_Envio_Servicio_Paqueteria_id')
@@ -76,12 +75,10 @@ router.post('/envio', [
 //este es la ruta para actualizar una envio
 router.put('/envio/:id', [
   param('id').isMongoId().withMessage('Invalid envio ID'),
-  /*
   // Venta_id 
   body('T_Envio_Venta_id')
     .exists({ checkFalsy: true }).withMessage('El ID de la venta es obligatorio')
     .isMongoId().withMessage('Debe ser un ObjectId válido'),
-  */
 
   // T_Envio_Servicio_Paqueteria_id: ObjectId requerido
   body('T_Envio_Servicio_Paqueteria_id')

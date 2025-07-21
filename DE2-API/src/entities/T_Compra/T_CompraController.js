@@ -8,7 +8,7 @@ const Compra = require('./T_CompraModel')
  *     tags: [Compra]
  *     responses:
  *       200:
- *         description: El catalogo de las Compras
+ *         description: La tabla de las Compras
  *         content:
  *           application/json:
  *             schema:

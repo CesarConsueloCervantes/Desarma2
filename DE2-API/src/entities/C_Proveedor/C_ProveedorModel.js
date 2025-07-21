@@ -41,11 +41,11 @@ const Schema = mongoose.Schema;
  *           type: string
  *           description: El Id del usuario que actualizo al proveedor
  *       example:
- *         C_Proveedor_Nombre: Apple
- *         C_Proveedor_Contacto: Juan Ortiz
+ *         C_Proveedor_Nombre: String
+ *         C_Proveedor_Contacto: String
  *         C_Proveedor_Telefono: "1234567890"
- *         C_Proveedor_Direccion: Avenida siglo XXI
- *         C_Proveedor_Email: Apple@gmail.com
+ *         C_Proveedor_Direccion: String
+ *         C_Proveedor_Email: String@String.com
  *         C_Proveedor_Estatus: true
  *         C_Proveedor_CreadoPor: 60d0fe4f5311236168a109cd
  *         C_Proveedor_ActualizadoPor: 60d0fe4f5311236168a109cd

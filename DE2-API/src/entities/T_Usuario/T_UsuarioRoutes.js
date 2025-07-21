@@ -64,7 +64,7 @@ router.post('/usuario', [
   body('T_Usuario_Estado')
     .optional()
     .isBoolean().withMessage('El estado debe ser booleano'),
-/*
+
   body('T_Usuario_Direccion_ProvinciaEstado')
     .optional()
     .isMongoId().withMessage('Provincia/Estado debe ser un ID válido'),
@@ -72,7 +72,6 @@ router.post('/usuario', [
   body('T_Usuario_Direccion_Pais')
     .optional()
     .isMongoId().withMessage('El país debe ser un ID válido')
-    */
 ],validate, usuarioController.postUsuario)
 
 
@@ -123,7 +122,7 @@ router.put('/usuario/:id', [
   body('T_Usuario_Estado')
     .optional()
     .isBoolean().withMessage('El estado debe ser booleano'),
-/*
+
   body('T_Usuario_Direccion_ProvinciaEstado')
     .optional()
     .isMongoId().withMessage('Provincia/Estado debe ser un ID válido'),
@@ -131,7 +130,6 @@ router.put('/usuario/:id', [
   body('T_Usuario_Direccion_Pais')
     .optional()
     .isMongoId().withMessage('El país debe ser un ID válido')
-    */
 ],validate, usuarioController.putUsuario)
 
 

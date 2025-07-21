@@ -8,7 +8,7 @@ const Usuario = require('../T_Usuario/T_UsuarioModel')
  *     tags: [Usuario]
  *     responses:
  *       200:
- *         description: El catalogo de los Usuarios
+ *         description: La tabla de los Usuarios
  *         content:
  *           application/json:
  *             schema:

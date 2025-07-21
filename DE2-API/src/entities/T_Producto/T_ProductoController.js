@@ -4,11 +4,11 @@ const Producto = require('./T_ProductoModel')
  * @swagger
  * /producto:
  *   get:
- *     summary: Obtiene todas las Productos
+ *     summary: Obtiene todos los Productos
  *     tags: [Producto]
  *     responses:
  *       200:
- *         description: El catalogo de las Productos
+ *         description: La tabla de los Productos
  *         content:
  *           application/json:
  *             schema:
@@ -40,13 +40,13 @@ exports.getProductos = async (req, res, next) => {
  *         description: La Id del Producto
  *     responses:
  *       200:
- *         description: La descripcion de la Producto por Id
+ *         description: La descripcion del Producto por Id
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Producto'
  *       404:
- *         description: Producto no encontrada
+ *         description: Producto no encontrado
  */
 exports.getProductoPorID = async (req, res, next) => {
   try {
@@ -65,7 +65,7 @@ exports.getProductoPorID = async (req, res, next) => {
  * @swagger
  * /producto:
  *   post:
- *     summary: Crea una nueva Producto
+ *     summary: Crea un nuevo Producto
  *     tags: [Producto]
  *     requestBody:
  *       required: true
@@ -75,7 +75,7 @@ exports.getProductoPorID = async (req, res, next) => {
  *             $ref: '#/components/schemas/Producto'
  *     responses:
  *       201:
- *         description: Producto creada exitosamente
+ *         description: Producto creado exitosamente
  *         content:
  *           application/json:
  *             schema:
@@ -99,7 +99,7 @@ exports.postProducto = async (req, res, next) => {
  * @swagger
  * /producto/{id}:
  *   put:
- *     summary: Actualiza una Producto por ID
+ *     summary: Actualiza un Producto por ID
  *     tags: [Producto]
  *     parameters:
  *       - in: path
@@ -107,7 +107,7 @@ exports.postProducto = async (req, res, next) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: EL Id de la Producto
+ *         description: EL Id del Producto
  *     requestBody:
  *       required: true
  *       content:
@@ -116,13 +116,13 @@ exports.postProducto = async (req, res, next) => {
  *             $ref: '#/components/schemas/Producto'
  *     responses:
  *       200:
- *         description: La Producto se actualizo
+ *         description: El Producto se actualizo
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Producto'
  *       404:
- *         description: Producto no encontrada
+ *         description: Producto no encontrado
  *       500:
  *         description: Some server error
  */
@@ -151,12 +151,12 @@ exports.putProducto = async (req, res, next) => {
  *         schema:
  *           type: string
  *         required: true
- *         description: El Id de la Producto
+ *         description: El Id del Producto
  *     responses:
  *       200:
- *         description: La Producto se elimino
+ *         description: EL Producto se elimino
  *       404:
- *         description: Producto no encontrada
+ *         description: Producto no encontrado
  */
 exports.deleteProducto = async (req, res, next) => {
   try {
