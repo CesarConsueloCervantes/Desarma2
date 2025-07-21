@@ -59,13 +59,12 @@ const Schema = mongoose.Schema;
  */
 
 const envioSchema = Schema({
-    /*
+
     T_Envio_Venta_id: {
         type: Schema.Types.ObjectId,
         required: true,
         ref: 'Venta' 
     },
-    */
     
     T_Envio_Servicio_Paqueteria_id: {
         type: Schema.Types.ObjectId,
