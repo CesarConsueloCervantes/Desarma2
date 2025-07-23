@@ -1,23 +1,39 @@
 const express = require('express');
 const { body } = require('express-validator');
-const authController = require('../auth/authController');
-const { registerLimiter } = require('../middlewares/rateLimiter');
+const validate = require('../../middlewares/validation');
+const authController = require('./authController');
 
 const router = express.Router();
 
-router.post('/register', registerLimiter, [
-  body('userName').notEmpty().withMessage('User name is required'),
-  body('email').isEmail().withMessage('Valid email is required'),
-  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
-], authController.register);
-
 router.post('/login', [
-  body('email').isEmail().withMessage('Valid email is required'),
-  body('password').notEmpty().withMessage('Password is required'),
-], authController.login);
+  body('T_Usuario_Email')
+    .exists({ checkFalsy: true }).withMessage('El email es obligatorio')
+    .isEmail().withMessage('Debe ser un email válido'),
+  
+  body('T_Usuario_Password')
+    .exists({ checkFalsy: true }).withMessage('La contraseña es obligatoria')
+    .isLength({ min: 8, max: 20 }).withMessage('La contraseña debe tener entre 8 y 20 caracteres')
 
-router.post('/refresh-token', [
-  body('token').notEmpty().withMessage('Refresh token is required'),
-], authController.refreshToken);
+], validate, authController.login);
+
+router.post('/register', [
+  // Solo validamos los campos obligatorios
+  body('T_Usuario_Nombre')
+    .exists({ checkFalsy: true }).withMessage('El nombre es obligatorio')
+    .isLength({ max: 30 }).withMessage('El nombre no debe exceder los 30 caracteres'),
+
+  body('T_Usuario_Apellido')
+    .exists({ checkFalsy: true }).withMessage('El apellido es obligatorio')
+    .isLength({ max: 30 }).withMessage('El apellido no debe exceder los 30 caracteres'),
+
+  body('T_Usuario_Email')
+    .exists({ checkFalsy: true }).withMessage('El email es obligatorio')
+    .isEmail().withMessage('Debe ser un email válido'),
+
+  body('T_Usuario_Password')
+    .exists({ checkFalsy: true }).withMessage('La contraseña es obligatoria')
+    .isLength({ min: 8, max: 20 }).withMessage('La contraseña debe tener entre 8 y 20 caracteres')
+
+], validate, authController.register);
 
 module.exports = router;

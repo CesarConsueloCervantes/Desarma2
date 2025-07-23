@@ -1,29 +1,18 @@
 /* eslint-disable consistent-return */
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../T_Usuario/usuarioModel.js');
-const RefreshToken = require('../auth/refreshTokenModel.js');
-
-// Function to generate JWT token
-const generateToken = (userId, name, role) => jwt.sign({ userId, name, role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+const Usuario = require('../T_Usuario/T_UsuarioModel.js');
 
 // Function to check if user exists
-const checkUserExists = async (email) => User.findOne({ email });
+const checkUserExists = async (email) => Usuario.findOne({ email });
 
 // Function to hash password
 const hashPassword = async (password) => bcrypt.hash(password, 10);
-
-// Function to generate refresh token
-const generateRefreshToken = (userId) => {
-  const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
-  return new RefreshToken({ token: refreshToken, userId }).save();
-};
 
 /**
  * @swagger
  * /auth/register:
  *   post:
- *     summary: Register a new user
+ *     summary: Registrar un nuevo usuario
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -32,55 +21,136 @@ const generateRefreshToken = (userId) => {
  *           schema:
  *             type: object
  *             required:
- *               - userName
- *               - userDisplayName
- *               - email
- *               - password
- *               - role
+ *               - T_Usuario_Nombre
+ *               - T_Usuario_Apellido
+ *               - T_Usuario_Email
+ *               - T_Usuario_Password
  *             properties:
- *               userName:
+ *               T_Usuario_Nombre:
  *                 type: string
- *               userDisplayName:
+ *                 description: Nombre del usuario
+ *                 example: Juan
+ *               T_Usuario_Apellido:
  *                 type: string
- *               email:
+ *                 description: Apellido del usuario
+ *                 example: Pérez
+ *               T_Usuario_Email:
  *                 type: string
- *               password:
+ *                 format: email
+ *                 description: Correo electrónico del usuario
+ *                 example: juan.perez@ejemplo.com
+ *               T_Usuario_Password:
  *                 type: string
- *               role:
- *                 type: string
- *                 enum: ['Admin', 'Sales', 'Support', 'Manager', 'User']
+ *                 format: password
+ *                 description: Contraseña del usuario (8-20 caracteres)
+ *                 example: "contraseña123"
  *     responses:
  *       201:
- *         description: User registered successfully
+ *         description: Usuario registrado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Usuario registrado exitosamente
+ *                 usuario:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: mongoId
+ *                       example: 60d0fe4f5311236168a109cd
+ *                     nombre:
+ *                       type: string
+ *                       example: Juan
+ *                     apellido:
+ *                       type: string
+ *                       example: Pérez
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                       example: juan.perez@ejemplo.com
+ *                     rol:
+ *                       type: string
+ *                       enum: [cliente, administrador]
+ *                       example: cliente
  *       400:
- *         description: User already exists
+ *         description: Error en los datos proporcionados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: El email ya está registrado
  *       500:
- *         description: Some server error
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Error interno del servidor
  */
 exports.register = async (req, res, next) => {
   try {
     const {
-      userName, userDisplayName = userName, email, password, role = 'User',
+      T_Usuario_Nombre,
+      T_Usuario_Apellido, 
+      T_Usuario_Email,
+      T_Usuario_Password
     } = req.body;
 
-    const existingUser = await checkUserExists(email);
-    if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+    // Verificar si el usuario ya existe
+    const usuarioExistente = await checkUserExists( T_Usuario_Email );
+    if (usuarioExistente) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'El email ya está registrado' 
+      });
     }
 
-    const hashedPassword = await hashPassword(password);
+    // Encriptar contraseña
+    const hashedPassword = await hashPassword(T_Usuario_Password, 10);
 
-    const newUser = new User({
-      userName,
-      userDisplayName,
-      email,
-      password: hashedPassword,
-      role,
+    // Crear nuevo usuario con campos básicos
+    const newUser = new Usuario({
+      T_Usuario_Nombre,
+      T_Usuario_Apellido,
+      T_Usuario_Email,
+      T_Usuario_Password: hashedPassword,
+      T_Usuario_Rol: 'cliente', // Valor por defecto
+      T_Usuario_Estado: true // Activamos la cuenta por defecto
     });
 
     await newUser.save();
 
-    res.status(201).json({ message: 'User registered successfully' });
+    res.status(201).json({
+      success: true,
+      message: 'Usuario registrado exitosamente',
+      usuario: {
+        id: newUser._id,
+        nombre: newUser.T_Usuario_Nombre,
+        apellido: newUser.T_Usuario_Apellido,
+        email: newUser.T_Usuario_Email,
+        rol: newUser.T_Usuario_Rol
+      }
+    });
+
   } catch (error) {
     next(error);
   }
@@ -90,7 +160,7 @@ exports.register = async (req, res, next) => {
  * @swagger
  * /auth/login:
  *   post:
- *     summary: Login a user
+ *     summary: Iniciar sesión de usuario
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -99,96 +169,173 @@ exports.register = async (req, res, next) => {
  *           schema:
  *             type: object
  *             required:
- *               - email
- *               - password
+ *               - T_Usuario_Email
+ *               - T_Usuario_Password
  *             properties:
- *               email:
+ *               T_Usuario_Email:
  *                 type: string
- *               password:
+ *                 format: email
+ *                 description: Correo electrónico del usuario
+ *                 example: usuario@ejemplo.com
+ *               T_Usuario_Password:
  *                 type: string
+ *                 format: password
+ *                 description: Contraseña del usuario
+ *                 example: "contraseña123"
  *     responses:
  *       200:
- *         description: User logged in successfully
+ *         description: Inicio de sesión exitoso
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 token:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
  *                   type: string
+ *                   example: Login exitoso
+ *                 usuario:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                       format: mongoId
+ *                       example: 60d0fe4f5311236168a109cd
+ *                     nombre:
+ *                       type: string
+ *                       example: Juan
+ *                     apellido:
+ *                       type: string
+ *                       example: Pérez
+ *                     email:
+ *                       type: string
+ *                       format: email
+ *                       example: usuario@ejemplo.com
+ *                     rol:
+ *                       type: string
+ *                       enum: [cliente, administrador]
+ *                       example: cliente
+ *                     telefono:
+ *                       type: string
+ *                       example: "1234567890"
+ *                     direccion:
+ *                       type: object
+ *                       properties:
+ *                         calle:
+ *                           type: string
+ *                           example: Calle Principal
+ *                         fraccionamiento:
+ *                           type: string
+ *                           example: Fracc. Centro
+ *                         cp:
+ *                           type: string
+ *                           example: "12345"
+ *                         ciudad:
+ *                           type: string
+ *                           example: Ciudad Ejemplo
+ *                         provinciaEstado:
+ *                           type: string
+ *                           format: mongoId
+ *                           example: 60d0fe4f5311236168a109cd
+ *                         pais:
+ *                           type: string
+ *                           format: mongoId
+ *                           example: 60d0fe4f5311236168a109cd
  *       400:
- *         description: Invalid credentials
+ *         description: Credenciales inválidas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Email o contraseña incorrectos
+ *       401:
+ *         description: Cuenta inactiva
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Cuenta inactiva
  *       500:
- *         description: Some server error
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *                   example: Error interno del servidor
  */
 exports.login = async (req, res, next) => {
   try {
-    const { email, password } = req.body;
+    // 1. Obtener email y contraseña del request
+    const { T_Usuario_Email, T_Usuario_Password } = req.body;
 
-    const user = await checkUserExists(email);
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+    // 2. Buscar el usuario por email
+    const usuario = await Usuario.findOne( {T_Usuario_Email} );
+    if (!usuario) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email o contraseña incorrectos' 
+      });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ message: 'Invalid credentials' });
+    // 3. Verificar la contraseña
+    const passwordValida = await bcrypt.compare(T_Usuario_Password, usuario.T_Usuario_Password);
+    if (!passwordValida) {
+      return res.status(400).json({ 
+        success: false,
+        message: 'Email o contraseña incorrectos' 
+      });
     }
 
-    // eslint-disable-next-line no-underscore-dangle
-    const token = generateToken(user._id, user.role, user.userDisplayName);
-    // eslint-disable-next-line no-underscore-dangle
-    const refreshToken = await generateRefreshToken(user._id);
-
-    res.status(200).json({ token, refreshToken: refreshToken.token });
-  } catch (error) {
-    next(error);
-  }
-};
-
-/**
- * @swagger
- * /auth/refresh-token:
- *   post:
- *     summary: Refresh the access token
- *     tags: [Auth]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - refreshToken
- *             properties:
- *               refreshToken:
- *                 type: string
- *     responses:
- *       200:
- *         description: Token refreshed successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 token:
- *                   type: string
- *                 refreshToken:
- *                   type: string
- *       400:
- *         description: Invalid refresh token
- */
-exports.refreshToken = async (req, res, next) => {
-  try {
-    const { token } = req.body;
-    const decoded = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
-    const user = await User.findById(decoded.userId);
-    if (user) {
-      const newToken = generateToken(user.userId, user.name, user.role);
-      res.status(200).json({ token: newToken });
-    } else {
-      res.status(401).json({ message: 'Invalid refresh token' });
+    // 4. Verificar si la cuenta está activa
+    if (!usuario.T_Usuario_Estado) {
+      return res.status(401).json({
+        success: false,
+        message: 'Cuenta inactiva'
+      });
     }
+
+    // 5. Login exitoso - enviar datos del usuario
+    res.status(200).json({
+      success: true,
+      message: 'Login exitoso',
+      usuario: {
+        id: usuario._id,
+        nombre: usuario.T_Usuario_Nombre,
+        apellido: usuario.T_Usuario_Apellido,
+        email: usuario.T_Usuario_Email,
+        rol: usuario.T_Usuario_Rol,
+        telefono: usuario.T_Usuario_Telefono,
+        direccion: {
+          calle: usuario.T_Usuario_Direccion_Calle,
+          fraccionamiento: usuario.T_Usuario_Direccion_Fraccionamiento,
+          cp: usuario.T_Usuario_Direccion_CP,
+          ciudad: usuario.T_Usuario_Direccion_Ciudad,
+          provinciaEstado: usuario.T_Usuario_Direccion_ProvinciaEstado,
+          pais: usuario.T_Usuario_Direccion_Pais
+        }
+      }
+    });
+
   } catch (error) {
     next(error);
   }
