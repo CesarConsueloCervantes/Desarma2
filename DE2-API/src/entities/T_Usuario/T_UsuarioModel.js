@@ -77,7 +77,6 @@ const usuarioSchema = Schema({
   T_Usuario_Password: {
     type: String,
     required: true,
-    maxlength: 20
   },
 
   T_Usuario_Nombre: {
@@ -96,7 +95,7 @@ const usuarioSchema = Schema({
   T_Usuario_Telefono :{
     type: String,
     match: [/^[0-9]{10}$/, 'El número de teléfono debe tener exactamente 10 dígitos numéricos'],
-    required: true,
+    default: null
   },
 
   T_Usuario_Direccion_Calle: {
