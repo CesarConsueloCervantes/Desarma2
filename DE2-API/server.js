@@ -1,5 +1,5 @@
 const express = require('express');
-//const cors = require('cors');
+const cors = require('cors');
 const connectDB = require('./src/config/database')
 //const initializeData = require('./src/config/initializeData');
 const routes = require('./src/entities/indexRoutes');
@@ -13,6 +13,8 @@ async function main(){
     try{
         await connectDB();
         //await initializeData();
+
+        app.use(cors({ origin: 'http://localhost:3000' }));
 
         swaggerMiddleware(app);
         app.use(errorHandler);
