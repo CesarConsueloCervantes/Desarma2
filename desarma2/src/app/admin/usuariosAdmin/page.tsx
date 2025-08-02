@@ -6,20 +6,20 @@ import { FaTrash, FaEdit, FaFilter, FaPlus } from 'react-icons/fa';
 import Link from 'next/link';
 import { useState } from 'react';
 
-export default function ProductAdminPage() {
+export default function UserAdminPage() {
   const [showForm, setShowForm] = useState(false);
   const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
-  const [currentProductId, setCurrentProductId] = useState<number | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
 
   const handleAddClick = () => {
     setFormMode('add');
-    setCurrentProductId(null);
+    setCurrentUserId(null);
     setShowForm(true);
   };
 
   const handleEditClick = (id: number) => {
     setFormMode('edit');
-    setCurrentProductId(id);
+    setCurrentUserId(id);
     setShowForm(true);
   };
 
@@ -31,7 +31,8 @@ export default function ProductAdminPage() {
         <aside className="admin-sidebar">
           <ul>
             <li><Link href="/admin/panel">Panel</Link></li>
-            <li className="active">Productos</li>
+            <li><Link href="/admin/products">Productos</Link></li>
+            <li className="active">Usuarios</li>
             <li>Proveedores</li>
             <li>Órdenes de Compra</li>
             <li>Ventas</li>
@@ -41,7 +42,7 @@ export default function ProductAdminPage() {
 
         <main className="admin-main">
           <div className="flex justify-between items-center mb-4">
-            <h1 className="text-xl font-bold">Lista de Productos</h1>
+            <h1 className="text-xl font-bold">Lista de Usuarios</h1>
             <div className="space-x-2">
               <button className="btn-filter">
                 <FaFilter className="mr-1" /> Filtros
@@ -55,27 +56,38 @@ export default function ProductAdminPage() {
           {showForm && (
             <div className="product-form-container">
               <h2 className="text-lg font-semibold mb-2">
-                {formMode === 'add' ? 'Producto - Nuevo' : `Editar Producto - ID ${currentProductId}`}
+                {formMode === 'add' ? 'Usuario - Nuevo' : `Editar Usuario - ID ${currentUserId}`}
               </h2>
               <form className="product-form">
                 <div className="form-image">
-                  <label>Imagen del producto</label>
+                  <label>Imagen del usuario</label>
                   <div className="image-placeholder">📷</div>
                 </div>
                 <div className="form-fields">
-                  <input type="text" placeholder="Nombre" />
-                  <textarea placeholder="Descripción"></textarea>
                   <div className="form-row">
-                    <input type="number" placeholder="Precio" />
-                    <input type="number" placeholder="Cantidad" />
+                    <input type="text" placeholder="Nombre" />
+                    <input type="text" placeholder="Apellido" />
                   </div>
                   <div className="form-row">
-                    <input type="text" placeholder="Marca" />
-                    <input type="text" placeholder="Estatus" />
+                    <input type="email" placeholder="Email" />
+                    <input type="text" placeholder="Teléfono" />
+                  </div>
+                  <input type="text" placeholder="Dirección" />
+                  <div className="form-row">
+                    <input type="text" placeholder="Ciudad" />
+                    <input type="text" placeholder="Estado/provincia" />
+                  </div>
+                  <div className="form-row">
+                    <input type="text" placeholder="País" />
+                    <input type="text" placeholder="Código Postal" />
                   </div>
                   <div className="form-row">
                     <input type="date" placeholder="Fecha de Registro" />
                     <input type="date" placeholder="Fecha de Actualización" />
+                  </div>
+                  <div className="form-row">
+                    <input type="text" placeholder="Rol" />
+                    <input type="text" placeholder="Estatus" />
                   </div>
                   <div className="form-actions">
                     <button type="button" className="btn-edit">Editar</button>
@@ -92,11 +104,10 @@ export default function ProductAdminPage() {
             <thead>
               <tr>
                 <th><input type="checkbox" /></th>
-                <th>Producto</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Proveedor</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Rol</th>
                 <th>Estatus</th>
                 <th>Acciones</th>
               </tr>
@@ -105,11 +116,10 @@ export default function ProductAdminPage() {
               {Array.from({ length: 10 }).map((_, index) => (
                 <tr key={index}>
                   <td><input type="checkbox" /></td>
-                  <td>Producto {index + 1}</td>
-                  <td>General</td>
-                  <td>$99.99</td>
-                  <td>50</td>
-                  <td>ProveedorX</td>
+                  <td>Usuario {index + 1}</td>
+                  <td>usuario{index + 1}@correo.com</td>
+                  <td>555-1234</td>
+                  <td>Cliente</td>
                   <td>Activo</td>
                   <td>
                     <button className="icon-button" onClick={() => handleEditClick(index + 1)}><FaEdit /></button>
@@ -138,4 +148,3 @@ export default function ProductAdminPage() {
     </div>
   );
 }
-
