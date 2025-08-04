@@ -1,71 +1,125 @@
 'use client';
 
+import { useState } from 'react';
+import { register } from '@/services/authService';
+import { useRouter } from 'next/navigation';
 import HeaderGuest from '@/components/HeaderGuest';
-import type { CSSProperties } from 'react';
 
 export default function RegisterPage() {
-  return (
-    <div>
-      <HeaderGuest />
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await register(firstName, lastName, email, password);
+      router.push('/login');
+    } catch (err) {
+      alert('Error en el registro');
+    }
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen">
+      <HeaderGuest />
       <main style={styles.container}>
-        <h1 style={styles.title}>Register</h1>
-        <form style={styles.form}>
+        <h1 style={styles.title}>Registro</h1>
+        <form onSubmit={handleSubmit} style={styles.form}>
           <div style={styles.row}>
-            <input type="text" placeholder="First name" style={styles.input} />
-            <input type="text" placeholder="Last name" style={styles.input} />
+            <input
+              type="text"
+              placeholder="Nombre"
+              style={styles.input}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Apellido"
+              style={styles.input}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
           </div>
-          <input type="password" placeholder="New Password" style={styles.inputFull} />
-          <input type="email" placeholder="Email address" style={styles.inputFull} />
-          <button type="submit" style={styles.button}>Submit</button>
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            style={styles.inputFull}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Contraseña"
+            style={styles.inputFull}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <select style={styles.inputFull} value="cliente" disabled>
+            <option value="cliente">Rol: Cliente</option>
+          </select>
+
+          <button type="submit" style={styles.button}>Registrarse</button>
         </form>
       </main>
     </div>
   );
 }
 
-const styles: { [key: string]: CSSProperties } = {
+const styles: { [key: string]: React.CSSProperties } = {
   container: {
     maxWidth: '400px',
     margin: '100px auto',
-    padding: '20px',
+    padding: '30px',
+    backgroundColor: '#fff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
     textAlign: 'left',
     fontFamily: 'sans-serif',
   },
   title: {
     fontSize: '24px',
-    marginBottom: '20px'
+    marginBottom: '20px',
+    textAlign: 'center'
   },
   form: {
     display: 'flex',
-    flexDirection: 'column' as const,
-    gap: '12px'
+    flexDirection: 'column',
+    gap: '14px',
   },
   row: {
     display: 'flex',
-    gap: '10px'
+    gap: '10px',
   },
   input: {
     flex: 1,
-    padding: '10px',
+    padding: '12px',
     fontSize: '14px',
     border: '1px solid #ccc',
-    borderRadius: '4px'
+    borderRadius: '8px',
   },
   inputFull: {
-    padding: '10px',
+    padding: '12px',
     fontSize: '14px',
     border: '1px solid #ccc',
-    borderRadius: '4px'
+    borderRadius: '8px',
   },
   button: {
     marginTop: '10px',
-    backgroundColor: '#475B85', // azul institucional
+    backgroundColor: '#000',
     color: '#fff',
     padding: '12px',
-    fontSize: '14px',
+    fontSize: '15px',
     border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer'
-  }
+    borderRadius: '8px',
+    cursor: 'pointer',
+  },
 };

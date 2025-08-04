@@ -1,141 +1,197 @@
 'use client';
 
-import HeaderAdmin from '@/components/HeaderAdmin';
-import Footer from '@/components/Footer';
-import { FaTrash, FaEdit, FaFilter, FaPlus } from 'react-icons/fa';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  getProductos,
+  createProducto,
+  updateProducto,
+  deleteProducto
+} from '@/services/productoService';
+import HeaderAdmin from '@/components/HeaderAdmin'; // ✅ Asegúrate de que esta ruta sea correcta
 
-export default function ProductAdminPage() {
+interface Producto {
+  _id?: string;
+  T_Producto_Nombre: string;
+  T_Producto_Descripcion: string;
+  T_Producto_Precio: number;
+  T_Producto_Stock: number;
+  T_Producto_Marca: string;
+  T_Producto_Estado: boolean;
+}
+
+export default function ProductsAdminPage() {
+  const [productos, setProductos] = useState<Producto[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
-  const [currentProductId, setCurrentProductId] = useState<number | null>(null);
+  const [formData, setFormData] = useState<Producto>({
+    T_Producto_Nombre: '',
+    T_Producto_Descripcion: '',
+    T_Producto_Precio: 0,
+    T_Producto_Stock: 0,
+    T_Producto_Marca: '',
+    T_Producto_Estado: true,
+  });
+  const [editId, setEditId] = useState<string | null>(null);
 
-  const handleAddClick = () => {
-    setFormMode('add');
-    setCurrentProductId(null);
-    setShowForm(true);
+  useEffect(() => {
+    cargarProductos();
+  }, []);
+
+  const cargarProductos = async () => {
+    try {
+      const data = await getProductos();
+      setProductos(data);
+    } catch (error) {
+      alert('Error al cargar productos');
+    }
   };
 
-  const handleEditClick = (id: number) => {
-    setFormMode('edit');
-    setCurrentProductId(id);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: name === 'T_Producto_Precio' || name === 'T_Producto_Stock' ? Number(value) : value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editId) {
+        await updateProducto(editId, formData);
+        alert('Producto actualizado');
+      } else {
+        await createProducto(formData);
+        alert('Producto creado');
+      }
+      setShowForm(false);
+      setEditId(null);
+      resetForm();
+      cargarProductos();
+    } catch (error) {
+      alert('Error al guardar producto');
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      T_Producto_Nombre: '',
+      T_Producto_Descripcion: '',
+      T_Producto_Precio: 0,
+      T_Producto_Stock: 0,
+      T_Producto_Marca: '',
+      T_Producto_Estado: true,
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('¿Eliminar este producto?')) {
+      try {
+        await deleteProducto(id);
+        alert('Producto eliminado');
+        cargarProductos();
+      } catch {
+        alert('Error al eliminar producto');
+      }
+    }
+  };
+
+  const handleEdit = (producto: Producto) => {
+    setFormData(producto);
+    setEditId(producto._id ?? null);
     setShowForm(true);
   };
 
   return (
-    <div className="admin-container">
-      <HeaderAdmin />
+    <>
+      <HeaderAdmin /> {/* ✅ Aquí se incluye el header */}
+      <div className="admin-container">
+        <div className="admin-content">
+          <aside className="sidebar">
+            <h2>Panel Principal</h2>
+            <Link href="/admin/panel">Inicio</Link>
+            <Link href="/admin/usuariosAdmin">Usuarios</Link>
+            <Link href="/admin/productsAdmin" className="active">Productos</Link>
+            <Link href="/admin/ordenCompra">Compras</Link>
+            <Link href="/admin/proovedoresAdmin">Proveedores</Link>
+            <Link href="/admin/ventasAdmin">Ventas</Link>
+            <Link href="/admin/enviosAdmin">Envios</Link>
+          </aside>
 
-      <div className="admin-content">
-        <aside className="admin-sidebar">
-          <ul>
-            <li><Link href="/admin/panel">Panel</Link></li>
-            <li className="active">Productos</li>
-            <li>Proveedores</li>
-            <li>Órdenes de Compra</li>
-            <li>Ventas</li>
-            <li>Envíos</li>
-          </ul>
-        </aside>
-
-        <main className="admin-main">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-xl font-bold">Lista de Productos</h1>
-            <div className="space-x-2">
-              <button className="btn-filter">
-                <FaFilter className="mr-1" /> Filtros
-              </button>
-              <button className="btn-add" onClick={handleAddClick}>
-                <FaPlus className="mr-1" /> Añadir
+          <div className="main-content">
+            <div className="product-actions">
+              <button className="btn-filter">Filtrar</button>
+              <button className="btn-add" onClick={() => {
+                setShowForm(true);
+                setEditId(null);
+                resetForm();
+              }}>
+                Añadir
               </button>
             </div>
-          </div>
 
-          {showForm && (
-            <div className="product-form-container">
-              <h2 className="text-lg font-semibold mb-2">
-                {formMode === 'add' ? 'Producto - Nuevo' : `Editar Producto - ID ${currentProductId}`}
-              </h2>
-              <form className="product-form">
-                <div className="form-image">
-                  <label>Imagen del producto</label>
-                  <div className="image-placeholder">📷</div>
-                </div>
-                <div className="form-fields">
-                  <input type="text" placeholder="Nombre" />
-                  <textarea placeholder="Descripción"></textarea>
-                  <div className="form-row">
-                    <input type="number" placeholder="Precio" />
-                    <input type="number" placeholder="Cantidad" />
+            {showForm && (
+              <div className="product-form-container">
+                <form onSubmit={handleSubmit} className="product-form">
+                  <div className="form-image">
+                    <div className="image-placeholder">🖼</div>
                   </div>
-                  <div className="form-row">
-                    <input type="text" placeholder="Marca" />
-                    <input type="text" placeholder="Estatus" />
+                  <div className="form-fields">
+                    <input name="T_Producto_Nombre" placeholder="Nombre" value={formData.T_Producto_Nombre} onChange={handleChange} required />
+                    <textarea name="T_Producto_Descripcion" placeholder="Descripción" value={formData.T_Producto_Descripcion} onChange={handleChange} required />
+                    <div className="form-row">
+                      <input name="T_Producto_Precio" type="number" placeholder="Precio" value={formData.T_Producto_Precio} onChange={handleChange} />
+                      <input name="T_Producto_Stock" type="number" placeholder="Cantidad" value={formData.T_Producto_Stock} onChange={handleChange} />
+                    </div>
+                    <div className="form-row">
+                      <input name="T_Producto_Marca" placeholder="Marca" value={formData.T_Producto_Marca} onChange={handleChange} />
+                      <select name="T_Producto_Estado" value={formData.T_Producto_Estado ? 'activo' : 'inactivo'} onChange={(e) => setFormData({ ...formData, T_Producto_Estado: e.target.value === 'activo' })}>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                      </select>
+                    </div>
+                    <div className="form-actions">
+                      <button type="submit" className="btn-save">Guardar</button>
+                      <button type="button" className="btn-back" onClick={() => {
+                        setShowForm(false);
+                        setEditId(null);
+                      }}>Cancelar</button>
+                    </div>
                   </div>
-                  <div className="form-row">
-                    <input type="date" placeholder="Fecha de Registro" />
-                    <input type="date" placeholder="Fecha de Actualización" />
-                  </div>
-                  <div className="form-actions">
-                    <button type="button" className="btn-edit">Editar</button>
-                    <button type="submit" className="btn-save">Guardar</button>
-                    <button type="button" className="btn-delete">Eliminar</button>
-                  </div>
-                </div>
-              </form>
-              <button onClick={() => setShowForm(false)} className="btn-back">Regresar ↩</button>
-            </div>
-          )}
+                </form>
+              </div>
+            )}
 
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th><input type="checkbox" /></th>
-                <th>Producto</th>
-                <th>Categoría</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Proveedor</th>
-                <th>Estatus</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: 10 }).map((_, index) => (
-                <tr key={index}>
-                  <td><input type="checkbox" /></td>
-                  <td>Producto {index + 1}</td>
-                  <td>General</td>
-                  <td>$99.99</td>
-                  <td>50</td>
-                  <td>ProveedorX</td>
-                  <td>Activo</td>
-                  <td>
-                    <button className="icon-button" onClick={() => handleEditClick(index + 1)}><FaEdit /></button>
-                    <button className="icon-button"><FaTrash /></button>
-                  </td>
+            <table className="product-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Precio</th>
+                  <th>Cantidad</th>
+                  <th>Marca</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {productos.map((producto) => (
+                  <tr key={producto._id}>
+                    <td>{producto.T_Producto_Nombre}</td>
+                    <td>${producto.T_Producto_Precio.toFixed(2)}</td>
+                    <td>{producto.T_Producto_Stock}</td>
+                    <td>{producto.T_Producto_Marca}</td>
+                    <td>{producto.T_Producto_Estado ? 'Activo' : 'Inactivo'}</td>
+                    <td className="actions">
+                      <button className="btn-edit" onClick={() => handleEdit(producto)}>✏️</button>
+                      <button className="btn-delete" onClick={() => handleDelete(producto._id!)}>🗑</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          <div className="pagination">
-            <span>{'<<'}</span>
-            <span>{'<'}</span>
-            <span className="current">1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>...</span>
-            <span>100</span>
-            <span>{'>'}</span>
-            <span>{'>>'}</span>
+            <div className="pagination">&lt;&lt; 1 2 3 4 5 ... 160 &gt;&gt;</div>
           </div>
-        </main>
+        </div>
       </div>
-
-      <Footer />
-    </div>
+    </>
   );
 }
-

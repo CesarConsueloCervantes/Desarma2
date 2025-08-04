@@ -2,24 +2,23 @@
 
 import HeaderAdmin from '@/components/HeaderAdmin';
 import Footer from '@/components/Footer';
-
+import Link from 'next/link';
 export default function AdminDashboard() {
   return (
     <div className="admin-container">
       <HeaderAdmin />
 
       <div className="admin-content">
-        <aside className="admin-sidebar">
-          <ul>
-            <li>Panel Principal</li>
-            <li>Productos</li>
-            <li>Usuarios</li>
-            <li>Proveedores</li>
-            <li>Órdenes de Compra</li>
-            <li>Ventas</li>
-            <li>Envíos</li>
-          </ul>
-        </aside>
+           <aside className="sidebar">
+            <h2>Panel Principal</h2>
+            <Link href="/admin/panel">Inicio</Link>
+            <Link href="/admin/usuariosAdmin">Usuarios</Link>
+            <Link href="/admin/productsAdmin" className="active">Productos</Link>
+            <Link href="/admin/ordenCompra">Compras</Link>
+            <Link href="/admin/proovedoresAdmin">Proveedores</Link>
+            <Link href="/admin/ventasAdmin">Ventas</Link>
+            <Link href="/admin/enviosAdmin">Envios</Link>
+          </aside>
 
         <main className="admin-main">
           <h1>Panel de Control</h1>

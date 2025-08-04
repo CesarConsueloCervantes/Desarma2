@@ -1,147 +1,244 @@
 'use client';
 
-import HeaderAdmin from '@/components/HeaderAdmin';
-import Footer from '@/components/Footer';
-import { FaTrash, FaEdit, FaFilter, FaPlus } from 'react-icons/fa';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import {
+  getProveedores,
+  createProveedor,
+  updateProveedor,
+  deleteProveedor
+} from '@/services/proveedorService';
+import HeaderAdmin from '@/components/HeaderAdmin'; // ✅ Asegúrate que esta ruta sea correcta
 
-export default function ProveedorAdminPage() {
+interface Proveedor {
+  _id?: string;
+  C_Proveedor_Nombre: string;
+  C_Proveedor_Email: string;
+  C_Proveedor_Contacto: string;
+  C_Proveedor_Telefono: string;
+  C_Proveedor_Direccion: string;
+  C_Proveedor_Estatus: boolean;
+  C_Proveedor_CreadoPor: string;
+  C_Proveedor_ActualizadoPor: string;
+}
+
+export default function ProveedoresAdminPage() {
+  const usuario = useSelector((state: any) => state.auth.user);
+  const [proveedores, setProveedores] = useState<Proveedor[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
-  const [currentId, setCurrentId] = useState<number | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
-  const handleAddClick = () => {
-    setFormMode('add');
-    setCurrentId(null);
-    setShowForm(true);
+  const [formData, setFormData] = useState<Proveedor>({
+    C_Proveedor_Nombre: '',
+    C_Proveedor_Email: '',
+    C_Proveedor_Contacto: '',
+    C_Proveedor_Telefono: '',
+    C_Proveedor_Direccion: '',
+    C_Proveedor_Estatus: true,
+    C_Proveedor_CreadoPor: '',
+    C_Proveedor_ActualizadoPor: ''
+  });
+
+  useEffect(() => {
+    cargarProveedores();
+  }, []);
+
+  const cargarProveedores = async () => {
+    try {
+      const data = await getProveedores();
+      setProveedores(data);
+    } catch (error) {
+      alert('Error al cargar proveedores');
+    }
   };
 
-  const handleEditClick = (id: number) => {
-    setFormMode('edit');
-    setCurrentId(id);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!usuario?.id) {
+      console.log(usuario)
+      alert('Debes estar logueado para realizar esta acción');
+      return;
+    }
+
+    const proveedorData: Proveedor = {
+      ...formData,
+      C_Proveedor_CreadoPor: formData.C_Proveedor_CreadoPor || usuario.id,
+      C_Proveedor_ActualizadoPor: usuario.id
+    };
+
+    try {
+      if (editId) {
+        await updateProveedor(editId, proveedorData);
+        alert('Proveedor actualizado');
+      } else {
+        await createProveedor(proveedorData);
+        alert('Proveedor creado');
+      }
+      setShowForm(false);
+      setEditId(null);
+      resetForm();
+      cargarProveedores();
+    } catch (error) {
+      alert('Error al guardar proveedor');
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      C_Proveedor_Nombre: '',
+      C_Proveedor_Email: '',
+      C_Proveedor_Contacto: '',
+      C_Proveedor_Telefono: '',
+      C_Proveedor_Direccion: '',
+      C_Proveedor_Estatus: true,
+      C_Proveedor_CreadoPor: '',
+      C_Proveedor_ActualizadoPor: ''
+    });
+  };
+
+  const handleDelete = async (id: string) => {
+    if (confirm('¿Eliminar este proveedor?')) {
+      try {
+        await deleteProveedor(id);
+        alert('Proveedor eliminado');
+        cargarProveedores();
+      } catch {
+        alert('Error al eliminar proveedor');
+      }
+    }
+  };
+
+  const handleEdit = (proveedor: Proveedor) => {
+    setFormData(proveedor);
+    setEditId(proveedor._id ?? null);
     setShowForm(true);
   };
 
   return (
-    <div className="admin-container">
-      <HeaderAdmin />
+    <>
+      <HeaderAdmin /> {/* ✅ Header agregado */}
+      <div className="admin-container">
+        <div className="admin-content">
+          <aside className="sidebar">
+            <h2>Panel Principal</h2>
+            <Link href="/admin/panel">Inicio</Link>
+            <Link href="/admin/usuariosAdmin">Usuarios</Link>
+            <Link href="/admin/productsAdmin">Productos</Link>
+            <Link href="/admin/ordenCompra">Compras</Link>
+            <Link href="/admin/proovedoresAdmin" className="active">Proveedores</Link>
+            <Link href="/admin/ventasAdmin">Ventas</Link>
+            <Link href="/admin/enviosAdmin">Envios</Link>
+          </aside>
 
-      <div className="admin-content">
-        <aside className="admin-sidebar">
-          <ul>
-            <li><Link href="/admin/panel">Panel</Link></li>
-            <li><Link href="/admin/productos">Productos</Link></li>
-            <li><Link href="/admin/usuarios">Usuarios</Link></li>
-            <li className="active">Proveedores</li>
-            <li>Órdenes de Compra</li>
-            <li>Ventas</li>
-            <li>Envíos</li>
-          </ul>
-        </aside>
-
-        <main className="admin-main">
-          <div className="flex justify-between items-center mb-4">
-            <h1 className="text-xl font-bold">Lista de Proveedores</h1>
-            <div className="space-x-2">
-              <button className="btn-filter">
-                <FaFilter className="mr-1" /> Filtros
-              </button>
-              <button className="btn-add" onClick={handleAddClick}>
-                <FaPlus className="mr-1" /> Añadir
+          <div className="main-content">
+            <div className="product-actions">
+              <button className="btn-filter">Filtrar</button>
+              <button
+                className="btn-add"
+                onClick={() => {
+                  setShowForm(true);
+                  setEditId(null);
+                  resetForm();
+                }}
+              >
+                Añadir
               </button>
             </div>
-          </div>
 
-          {showForm && (
-            <div className="product-form-container">
-              <h2 className="text-lg font-semibold mb-2">
-                {formMode === 'add' ? 'Proveedor - Nuevo' : `Editar Proveedor - ID ${currentId}`}
-              </h2>
-              <form className="product-form">
-                <div className="form-image">
-                  <label>Imagen del proveedor</label>
-                  <div className="image-placeholder">📷</div>
-                </div>
-                <div className="form-fields">
-                  <div className="form-row">
-                    <input type="text" placeholder="Nombre" />
-                    <input type="text" placeholder="Contacto" />
+            {showForm && (
+              <div className="product-form-container">
+                <form onSubmit={handleSubmit} className="product-form">
+                  <div className="form-fields">
+                    <input
+                      name="C_Proveedor_Nombre"
+                      placeholder="Nombre"
+                      value={formData.C_Proveedor_Nombre}
+                      onChange={handleChange}
+                      required
+                    />
+                    <input
+                      name="C_Proveedor_Email"
+                      placeholder="Correo electrónico"
+                      type="email"
+                      value={formData.C_Proveedor_Email}
+                      onChange={handleChange}
+                      required
+                    />
+                    <input
+                      name="C_Proveedor_Contacto"
+                      placeholder="Contacto"
+                      value={formData.C_Proveedor_Contacto}
+                      onChange={handleChange}
+                      required
+                    />
+                    <input
+                      name="C_Proveedor_Telefono"
+                      placeholder="Teléfono (10 dígitos)"
+                      value={formData.C_Proveedor_Telefono}
+                      onChange={handleChange}
+                      required
+                    />
+                    <input
+                      name="C_Proveedor_Direccion"
+                      placeholder="Dirección"
+                      value={formData.C_Proveedor_Direccion}
+                      onChange={handleChange}
+                      required
+                    />
+                    <div className="form-actions">
+                      <button type="submit" className="btn-save">Guardar</button>
+                      <button type="button" className="btn-back" onClick={() => {
+                        setShowForm(false);
+                        setEditId(null);
+                      }}>Cancelar</button>
+                    </div>
                   </div>
-                  <div className="form-row">
-                    <input type="email" placeholder="Email" />
-                    <input type="tel" placeholder="Teléfono" />
-                  </div>
-                  <input type="text" placeholder="Dirección" />
-                  <div className="form-row">
-                    <input type="text" placeholder="Ciudad" />
-                    <input type="text" placeholder="Estado/provincia" />
-                  </div>
-                  <div className="form-row">
-                    <input type="text" placeholder="Código Postal" />
-                    <input type="text" placeholder="País" />
-                  </div>
-                  <div className="form-row">
-                    <input type="date" placeholder="Fecha de Registro" />
-                    <input type="date" placeholder="Fecha de Actualización" />
-                  </div>
-                  <input type="text" placeholder="Estatus" />
-                  <div className="form-actions">
-                    <button type="button" className="btn-edit">Editar</button>
-                    <button type="submit" className="btn-save">Guardar</button>
-                    <button type="button" className="btn-delete">Eliminar</button>
-                  </div>
-                </div>
-              </form>
-              <button onClick={() => setShowForm(false)} className="btn-back">Regresar ↩</button>
-            </div>
-          )}
+                </form>
+              </div>
+            )}
 
-          <table className="admin-table">
-            <thead>
-              <tr>
-                <th><input type="checkbox" /></th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Ciudad</th>
-                <th>País</th>
-                <th>Estatus</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Array.from({ length: 10 }).map((_, index) => (
-                <tr key={index}>
-                  <td><input type="checkbox" /></td>
-                  <td>Proveedor {index + 1}</td>
-                  <td>correo@ejemplo.com</td>
-                  <td>Ciudad</td>
-                  <td>País</td>
-                  <td>Activo</td>
-                  <td>
-                    <button className="icon-button" onClick={() => handleEditClick(index + 1)}><FaEdit /></button>
-                    <button className="icon-button"><FaTrash /></button>
-                  </td>
+            <table className="product-table">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Contacto</th>
+                  <th>Teléfono</th>
+                  <th>Dirección</th>
+                  <th>Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {proveedores.map((proveedor) => (
+                  <tr key={proveedor._id}>
+                    <td>{proveedor.C_Proveedor_Nombre}</td>
+                    <td>{proveedor.C_Proveedor_Email}</td>
+                    <td>{proveedor.C_Proveedor_Contacto}</td>
+                    <td>{proveedor.C_Proveedor_Telefono}</td>
+                    <td>{proveedor.C_Proveedor_Direccion}</td>
+                    <td className="actions">
+                      <button className="btn-edit" onClick={() => handleEdit(proveedor)}>✏️</button>
+                      <button className="btn-delete" onClick={() => handleDelete(proveedor._id!)}>🗑</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-          <div className="pagination">
-            <span>{'<<'}</span>
-            <span>{'<'}</span>
-            <span className="current">1</span>
-            <span>2</span>
-            <span>3</span>
-            <span>...</span>
-            <span>100</span>
-            <span>{'>'}</span>
-            <span>{'>>'}</span>
+            <div className="pagination">&lt;&lt; 1 2 3 &gt;&gt;</div>
           </div>
-        </main>
+        </div>
       </div>
-
-      <Footer />
-    </div>
+    </>
   );
 }
