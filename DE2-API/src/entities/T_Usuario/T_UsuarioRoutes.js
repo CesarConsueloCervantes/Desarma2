@@ -79,7 +79,7 @@ router.post('/usuario', [
 router.put('/usuario/:id', [
     param('id').isMongoId().withMessage('Invalid Usuario ID'),
   body('T_Usuario_Password')
-    .exists({ checkFalsy: true }).withMessage('La contraseña es obligatoria')
+    .optional()
     .isLength({ max: 20, min: 8 }).withMessage('La contraseña deve tener entre 8 y 20 caracteres'),
 
   body('T_Usuario_Nombre')
