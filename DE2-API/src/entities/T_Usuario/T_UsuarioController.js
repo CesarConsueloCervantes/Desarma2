@@ -1,4 +1,5 @@
 const Usuario = require('../T_Usuario/T_UsuarioModel')
+const bcrypt = require('bcryptjs');
 
 /**
  * @swagger
@@ -128,6 +129,9 @@ exports.postUsuario = async (req, res, next) => {
  */
 exports.putUsuario = async (req, res, next) => {
   try {
+    if (req.body.T_Usuario_Password) {
+      req.body.T_Usuario_Password = await bcrypt.hash(req.body.T_Usuario_Password, 10);
+    }
     const usuario = await Usuario.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!usuario) {
       res.status(404).json({ message: 'Usuario no encontrado' });

@@ -29,6 +29,10 @@ router.post('/producto', [
     .isString().withMessage('La descripción debe ser una cadena de texto')
     .isLength({ max: 100 }).withMessage('La descripción no debe exceder 100 caracteres'),
 
+  body('T_Producto_Imagen')
+    .optional()
+    .isURL().withMessage('La imagen debe ser una URL válida'),
+
   body('T_Producto_Precio')
     .exists({ checkFalsy: true }).withMessage('El precio del producto es obligatorio')
     .isNumeric().withMessage('El precio debe ser un número')
@@ -59,6 +63,10 @@ router.put('/producto/:id', [
     .optional()
     .isString().withMessage('La descripción debe ser una cadena de texto')
     .isLength({ max: 100 }).withMessage('La descripción no debe exceder 100 caracteres'),
+
+  body('T_Producto_Imagen')
+    .optional()
+    .isURL().withMessage('La imagen debe ser una URL válida'),
 
   body('T_Producto_Precio')
     .exists({ checkFalsy: true }).withMessage('El precio del producto es obligatorio')
