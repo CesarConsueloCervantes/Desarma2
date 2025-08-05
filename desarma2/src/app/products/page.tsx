@@ -1,73 +1,85 @@
 'use client';
 
 import HeaderGuest from '@/components/HeaderGuest';
-import type { CSSProperties } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { getProductos } from '@/services/productoService';
+import { useCart } from '@/store/provider'; // 👈 Nuevo import
+import type { CSSProperties } from 'react';
 
-const productos = [
-  {
-    id: 1,
-    nombre: 'Pantalla Samsung A05',
-    precio: 1200,
-    imagen: '/pieza1.png',
-  },
-  {
-    id: 2,
-    nombre: 'Batería Xiaomi C5',
-    precio: 650,
-    imagen: '/pieza2.png',
-  },
-  {
-    id: 3,
-    nombre: 'Cámara Motorola G8',
-    precio: 480,
-    imagen: '/pieza3.png',
-  },
-  {
-    id: 4,
-    nombre: 'Placa base OnePlus 8T',
-    precio: 2300,
-    imagen: '/placa.png',
-  },
-];
+interface Producto {
+  _id: string;
+  T_Producto_Nombre: string;
+  T_Producto_Descripcion: string;
+  T_Producto_Precio: number;
+  T_Producto_Stock: number;
+  T_Producto_Marca: string;
+  T_Producto_Estado: boolean;
+  T_Producto_Imagen: string;
+}
 
 export default function ProductsPage() {
   const router = useRouter();
+  const { addToCart } = useCart(); // 👈 Hook del carrito
+  const [productos, setProductos] = useState<Producto[]>([]);
 
-  const handleAgregarAlCarrito = (id: number) => {
-    // Aquí podrías agregar lógica para guardar en contexto o localStorage
-    // Redirigir al carrito
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const productosReal = await getProductos();
+        const activos = productosReal.filter((p) => p.T_Producto_Estado);
+        setProductos(activos);
+      } catch (error) {
+        console.error('Error al cargar productos reales:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // ✅ Nuevo handler funcional
+  const handleAgregarAlCarrito = (producto: Producto) => {
+    addToCart({
+      id: producto._id,
+      name: producto.T_Producto_Nombre,
+      price: producto.T_Producto_Precio,
+      quantity: 1,
+    });
     router.push('/car');
   };
 
   return (
     <div>
       <HeaderGuest />
-
       <main style={styles.container}>
         <h1 style={styles.title}>Productos Disponibles</h1>
-
         <div style={styles.grid}>
-          {productos.map((p) => (
-            <div key={p.id} style={styles.card}>
-              <Image
-                src={p.imagen}
-                alt={p.nombre}
-                width={160}
-                height={160}
-                style={styles.image}
-              />
-              <h3 style={styles.productName}>{p.nombre}</h3>
-              <p style={styles.price}>${p.precio} MXN</p>
-              <button
-                style={styles.button}
-                onClick={() => handleAgregarAlCarrito(p.id)}
-              >
-                Agregar al carrito
-              </button>
-            </div>
-          ))}
+          {productos.length > 0 ? (
+            productos.map((p) => (
+              <div key={p._id} style={styles.card}>
+                <Image
+                  src={p.T_Producto_Imagen || '/pieza1.png'}
+                  alt={p.T_Producto_Nombre}
+                  width={160}
+                  height={160}
+                  style={styles.image}
+                />
+                <h3 style={styles.productName}>{p.T_Producto_Nombre}</h3>
+                <p style={styles.price}>${p.T_Producto_Precio} MXN</p>
+                <button
+                  style={styles.button}
+                  onClick={() => handleAgregarAlCarrito(p)} // 👈 Pasamos el producto
+                >
+                  Agregar al carrito
+                </button>
+              </div>
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', color: '#666' }}>
+              No hay productos activos disponibles.
+            </p>
+          )}
         </div>
       </main>
     </div>
@@ -124,4 +136,3 @@ const styles: { [key: string]: CSSProperties } = {
     cursor: 'pointer',
   },
 };
-    

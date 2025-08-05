@@ -134,16 +134,16 @@ export default function UserAdminPage() {
       <HeaderAdmin />
 
       <div className="admin-content">
-        <aside className="sidebar">
-          <h2>Panel Principal</h2>
-          <Link href="/admin/panel">Inicio</Link>
-          <Link href="/admin/productsAdmin">Productos</Link>
-          <Link href="/admin/userAdmin" className="active">Usuarios</Link>
-          <Link href="/admin/proovedoresAdmin">Proveedores</Link>
-          <Link href="/admin/ordenCompra">Compras</Link>
-          <Link href="/admin/ventasAdmin">Ventas</Link>
-          <Link href="/admin/enviosAdmin">Envíos</Link>
-        </aside>
+          <aside className="sidebar">
+            <h2>Panel Principal</h2>
+            <Link href="/admin/panel">Inicio</Link>
+            <Link href="/admin/usuariosAdmin"className="active">Usuarios</Link>
+            <Link href="/admin/productsAdmin" >Productos</Link>
+            <Link href="/admin/ordenCompra">Compras</Link>
+            <Link href="/admin/proovedoresAdmin">Proveedores</Link>
+            <Link href="/admin/ventasAdmin">Ventas</Link>
+            <Link href="/admin/enviosAdmin">Envios</Link>
+          </aside>
 
         <main className="main-content">
           <div className="product-actions">

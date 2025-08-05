@@ -19,6 +19,7 @@ interface Producto {
   T_Producto_Stock: number;
   T_Producto_Marca: string;
   T_Producto_Estado: boolean;
+  T_Producto_Imagen: String;
 }
 
 export default function ProductsAdminPage() {
@@ -31,6 +32,7 @@ export default function ProductsAdminPage() {
     T_Producto_Stock: 0,
     T_Producto_Marca: '',
     T_Producto_Estado: true,
+    T_Producto_Imagen: '',
   });
   const [editId, setEditId] = useState<string | null>(null);
 
@@ -79,6 +81,7 @@ export default function ProductsAdminPage() {
       T_Producto_Stock: 0,
       T_Producto_Marca: '',
       T_Producto_Estado: true,
+      T_Producto_Imagen: '',
     });
   };
 
@@ -100,9 +103,20 @@ export default function ProductsAdminPage() {
     setShowForm(true);
   };
 
+  // ✅ Función nueva para manejar el click en el área de imagen
+  const handleImagenClick = () => {
+    const url = prompt('Ingresa la URL de la imagen del producto:');
+    if (url) {
+      setFormData(prev => ({
+        ...prev,
+        T_Producto_Imagen: url
+      }));
+    }
+  };
+
   return (
     <>
-      <HeaderAdmin /> {/* ✅ Aquí se incluye el header */}
+      <HeaderAdmin />
       <div className="admin-container">
         <div className="admin-content">
           <aside className="sidebar">
@@ -131,9 +145,34 @@ export default function ProductsAdminPage() {
             {showForm && (
               <div className="product-form-container">
                 <form onSubmit={handleSubmit} className="product-form">
-                  <div className="form-image">
-                    <div className="image-placeholder">🖼</div>
+                  
+                  {/* ✅ Área interactiva de imagen por URL */}
+                  <div
+                    className="form-image"
+                    onClick={handleImagenClick}
+                    style={{
+                      cursor: 'pointer',
+                      padding: '16px',
+                      border: '2px dashed #bbb',
+                      borderRadius: '10px',
+                      backgroundColor: '#f9f9f9',
+                      textAlign: 'center',
+                      marginBottom: '16px',
+                    }}
+                  >
+                    {formData.T_Producto_Imagen ? (
+                      <img
+                        src={formData.T_Producto_Imagen.toString()}
+                        alt="Vista previa del producto"
+                        style={{ maxWidth: '100%', maxHeight: '250px', borderRadius: '8px' }}
+                      />
+                    ) : (
+                      <div className="image-placeholder" style={{ fontSize: '48px', color: '#aaa' }}>
+                        🖼
+                      </div>
+                    )}
                   </div>
+
                   <div className="form-fields">
                     <input name="T_Producto_Nombre" placeholder="Nombre" value={formData.T_Producto_Nombre} onChange={handleChange} required />
                     <textarea name="T_Producto_Descripcion" placeholder="Descripción" value={formData.T_Producto_Descripcion} onChange={handleChange} required />
@@ -148,6 +187,7 @@ export default function ProductsAdminPage() {
                         <option value="inactivo">Inactivo</option>
                       </select>
                     </div>
+
                     <div className="form-actions">
                       <button type="submit" className="btn-save">Guardar</button>
                       <button type="button" className="btn-back" onClick={() => {

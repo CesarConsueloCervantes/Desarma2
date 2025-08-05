@@ -1,8 +1,38 @@
 'use client';
 
+import { useState } from 'react';
 import HeaderGuest from '@/components/HeaderGuest';
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    nombre: '',
+    correo: '',
+    asunto: '',
+    mensaje: '',
+  });
+
+  const [formEnviado, setFormEnviado] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Simular "envío" eliminando los datos y mostrando el mensaje
+    setFormData({
+      nombre: '',
+      correo: '',
+      asunto: '',
+      mensaje: '',
+    });
+    setFormEnviado(true);
+
+    // Ocultar el mensaje después de unos segundos (opcional)
+    setTimeout(() => setFormEnviado(false), 4000);
+  };
+
   return (
     <div>
       <HeaderGuest />
@@ -38,14 +68,43 @@ export default function ContactPage() {
             ></iframe>
           </div>
 
-          <form className="contact-form">
+          <form className="contact-form" onSubmit={handleSubmit}>
             <div className="form-row">
-              <input type="text" placeholder="Tu Nombre" />
-              <input type="email" placeholder="Tu Correo" />
+              <input
+                type="text"
+                name="nombre"
+                placeholder="Tu Nombre"
+                value={formData.nombre}
+                onChange={handleChange}
+              />
+              <input
+                type="email"
+                name="correo"
+                placeholder="Tu Correo"
+                value={formData.correo}
+                onChange={handleChange}
+              />
             </div>
-            <input type="text" placeholder="Asunto" />
-            <textarea placeholder="Mensaje"></textarea>
+            <input
+              type="text"
+              name="asunto"
+              placeholder="Asunto"
+              value={formData.asunto}
+              onChange={handleChange}
+            />
+            <textarea
+              name="mensaje"
+              placeholder="Mensaje"
+              value={formData.mensaje}
+              onChange={handleChange}
+            ></textarea>
             <button type="submit">Enviar Mensaje</button>
+
+            {formEnviado && (
+              <p className="form-success" style={{ marginTop: '16px', color: '#4CAF50' }}>
+                ✅ ¡Mensaje enviado exitosamente!
+              </p>
+            )}
           </form>
         </section>
       </div>

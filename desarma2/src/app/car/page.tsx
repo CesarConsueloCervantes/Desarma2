@@ -1,110 +1,143 @@
 'use client';
 
-import HeaderGuest from '@/components/HeaderGuest';
-import type { CSSProperties } from 'react';
-import Image from 'next/image';
+import { useCart } from '@/store/provider';
+import { useState } from 'react';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import jsPDF from 'jspdf';
 
 export default function CartPage() {
+  const { cartItems, removeFromCart, clearCart } = useCart();
+  const [ticketGenerated, setTicketGenerated] = useState(false);
+
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const handleGenerateTicket = () => {
+    if (cartItems.length === 0) return alert('El carrito está vacío');
+    setTicketGenerated(true);
+  };
+
+  const handleClearCart = () => {
+    clearCart();
+    setTicketGenerated(false);
+  };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    const today = new Date().toLocaleDateString();
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(18);
+    doc.addImage('/pdf.png', 'PNG', 140, 10, 50, 20);
+    doc.text('RepairShop - Ticket de Compra', 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${today}`, 20, 28);
+
+    let y = 40;
+    cartItems.forEach((item, index) => {
+      doc.text(
+        `${index + 1}. ${item.name} x${item.quantity} = $${item.price * item.quantity}`,
+        20,
+        y
+      );
+      y += 10;
+    });
+
+    doc.setFontSize(14);
+    doc.text(`Total pagado: $${totalPrice}`, 20, y + 10);
+
+    doc.save('ticket_coolpanda.pdf');
+  };
+
   return (
-    <div>
-      <HeaderGuest />
+    <>
+      <Header />
 
-      <main style={styles.container}>
-        <h1 style={styles.title}>Tu Carrito</h1>
+      <main className="min-h-screen bg-gradient-to-br from-[#0F172A] to-[#1E293B] text-white px-6 py-8">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold mb-6 text-center text-sky-400">
+            🛍️ Tu carrito
+          </h1>
 
-        <div style={styles.cartItem}>
-          <Image
-            src="/pieza1.png"
-            alt="Producto"
-            width={80}
-            height={80}
-            style={{ borderRadius: '6px' }}
-          />
-          <div style={styles.itemDetails}>
-            <h3 style={styles.itemTitle}>Pantalla Samsung A05</h3>
-            <p style={styles.itemPrice}>$1,200 MXN</p>
-            <p style={styles.itemQty}>Cantidad: 1</p>
+          {cartItems.length === 0 ? (
+            <p className="text-slate-400 text-center">Tu carrito está vacío.</p>
+          ) : (
+            <ul className="space-y-4 mb-6">
+              {cartItems.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex justify-between items-center bg-slate-800 p-4 rounded shadow-md hover:shadow-lg transition-shadow"
+                >
+                  <div>
+                    <h2 className="text-lg font-semibold text-sky-300">
+                      {item.name}
+                    </h2>
+                    <p className="text-slate-400">Cantidad: {item.quantity}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sky-200 font-medium">
+                      ${item.price * item.quantity}
+                    </p>
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-pink-400 hover:underline text-sm mt-1"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <div className="flex justify-between items-center mb-6">
+            <p className="text-xl font-bold text-sky-200">
+              Total: ${totalPrice}
+            </p>
+            <div className="space-x-4">
+              <button
+                onClick={handleGenerateTicket}
+                className="bg-sky-500 hover:bg-sky-600 text-white font-medium px-4 py-2 rounded transition"
+              >
+                Generar Ticket
+              </button>
+              <button
+                onClick={handleClearCart}
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded transition"
+              >
+                Vaciar
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div style={styles.cartItem}>
-          <Image
-            src="/pieza2.png"
-            alt="Producto"
-            width={80}
-            height={80}
-            style={{ borderRadius: '6px' }}
-          />
-          <div style={styles.itemDetails}>
-            <h3 style={styles.itemTitle}>Batería Xiaomi C5</h3>
-            <p style={styles.itemPrice}>$650 MXN</p>
-            <p style={styles.itemQty}>Cantidad: 2</p>
-          </div>
-        </div>
-
-        <div style={styles.totalBox}>
-          <p style={styles.totalText}>Total: $2,500 MXN</p>
-          <button style={styles.checkoutButton}>Finalizar compra</button>
+          {ticketGenerated && (
+            <div className="bg-green-800 p-4 rounded shadow-md text-green-100">
+              <h2 className="text-2xl font-bold mb-2">🎟️ Ticket generado</h2>
+              <ul className="space-y-1 mb-2">
+                {cartItems.map((item) => (
+                  <li key={item.id}>
+                    {item.name} x{item.quantity} = ${item.price * item.quantity}
+                  </li>
+                ))}
+              </ul>
+              <p className="font-semibold mb-4">
+                Total pagado: ${totalPrice}
+              </p>
+              <button
+                onClick={handleDownloadPDF}
+                className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded transition"
+              >
+                Descargar Ticket PDF
+              </button>
+            </div>
+          )}
         </div>
       </main>
-    </div>
+
+      <Footer />
+    </>
   );
 }
-const styles: { [key: string]: CSSProperties } = {
-  container: {
-    maxWidth: '600px',
-    margin: '80px auto',
-    padding: '20px',
-    fontFamily: 'Arial, sans-serif',
-  },
-  title: {
-    fontSize: '24px',
-    marginBottom: '24px',
-    color: '#475B85',
-    textAlign: 'center',
-  },
-  cartItem: {
-    display: 'flex',
-    gap: '16px',
-    padding: '12px',
-    borderBottom: '1px solid #eee',
-    alignItems: 'center',
-  },
-  itemDetails: {
-    display: 'flex',
-    flexDirection: 'column' as const,
-    justifyContent: 'center',
-  },
-  itemTitle: {
-    fontSize: '16px',
-    marginBottom: '6px',
-    fontWeight: 'bold',
-  },
-  itemPrice: {
-    fontSize: '14px',
-    marginBottom: '2px',
-    color: '#333',
-  },
-  itemQty: {
-    fontSize: '14px',
-    color: '#555',
-  },
-  totalBox: {
-    marginTop: '30px',
-    textAlign: 'center',
-  },
-  totalText: {
-    fontSize: '18px',
-    fontWeight: 'bold',
-    marginBottom: '16px',
-  },
-  checkoutButton: {
-    backgroundColor: '#475B85',
-    color: '#fff',
-    border: 'none',
-    padding: '12px 20px',
-    borderRadius: '4px',
-    fontSize: '14px',
-    cursor: 'pointer',
-  },
-};

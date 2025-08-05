@@ -11,9 +11,9 @@ export default function AdminDashboard() {
       <div className="admin-content">
            <aside className="sidebar">
             <h2>Panel Principal</h2>
-            <Link href="/admin/panel">Inicio</Link>
+            <Link href="/admin/panel"className="active">Inicio</Link>
             <Link href="/admin/usuariosAdmin">Usuarios</Link>
-            <Link href="/admin/productsAdmin" className="active">Productos</Link>
+            <Link href="/admin/productsAdmin" >Productos</Link>
             <Link href="/admin/ordenCompra">Compras</Link>
             <Link href="/admin/proovedoresAdmin">Proveedores</Link>
             <Link href="/admin/ventasAdmin">Ventas</Link>

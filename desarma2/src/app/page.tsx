@@ -27,42 +27,25 @@ export default function Home() {
          <h2>Piezas más vendidas</h2>
         <div className="product-grid">
            <div className="product">
-              <Image src="/bateria.png" alt="Batería" width={128} height={128} />
+              <Image src="/bateria.png" alt="Batería" width={1000} height={1000} />
             <p>Batería</p>
           </div>
         <div className="product">
-          <Image src="/placa.png" alt="Placa" width={128} height={128} />
+          <Image src="/diodo.png" alt="Placa" width={1000} height={1000} />
           <p>Placa</p>
         </div>
         <div className="product">
-          <Image src="/camara.png" alt="Cámara" width={128} height={128} />
+          <Image src="/camara.png" alt="Cámara" width={1000} height={1000} />
           <p>Cámara</p>
+        </div>
+          <div className="product">
+          <Image src="/pincel.png" alt="Cámara" width={1000} height={1000} />
+          <p>refacciones</p>
         </div>
         </div>
       </section>
 
 
-        {/* Piezas recomendadas */}
-      <section className="piezas-recomendadas">
-  <h2>Piezas recomendadas</h2>
-  <div className="carousel-container">
-    <div className="carousel-track">
-      <div className="carousel-item">
-        <Image src="/pieza1.png" alt="One Plus" width={180} height={180} />
-        <p>One Plus</p>
-      </div>
-      <div className="carousel-item">
-        <Image src="/pieza2.png" alt="Xiaomi C5 Plus" width={180} height={180} />
-        <p>Xiaomi C5 Plus</p>
-      </div>
-      <div className="carousel-item">
-        <Image src="/pieza3.png" alt="Samsung A05" width={180} height={180} />
-        <p>Samsung A05</p>
-      </div>
-      {/* Puedes agregar más aquí */}
-    </div>
-  </div>
-</section>
 
       </main>
 
