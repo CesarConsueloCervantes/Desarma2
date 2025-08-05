@@ -21,6 +21,9 @@ const Schema = mongoose.Schema;
  *         T_Producto_Descripcion:
  *           type: string
  *           description: Breve descripción del producto
+ *         T_Producto_Imagen:
+ *           type: string
+ *           description: URL de la imagen del producto
  *         T_Producto_Precio:
  *           type: Number
  *           description: Precio unitario del producto
@@ -36,6 +39,7 @@ const Schema = mongoose.Schema;
  *       example:
  *         T_Producto_Nombre: "String"
  *         T_Producto_Descripcion: "string"
+ *         T_Producto_Imagen: "http//example.com/image.jpg"
  *         T_Producto_Precio: 1234567890
  *         T_Producto_Stock: 1234
  *         T_Producto_Marca: "string"
@@ -53,6 +57,10 @@ const productoSchema = Schema({
     T_Producto_Descripcion: {
         type: String,
         maxlength: 100
+    },
+
+    T_Producto_Imagen: {
+        type: String
     },
 
     T_Producto_Precio: {
