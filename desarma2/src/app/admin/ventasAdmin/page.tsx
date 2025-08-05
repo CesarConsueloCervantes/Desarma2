@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaTrash, FaEdit, FaFilter, FaPlus } from 'react-icons/fa';
 import {
+  getRegistrosVenta,
   getRegistroVentaPorId,
   createRegistroVenta,
   updateRegistroVenta,
@@ -46,7 +47,7 @@ export default function VentasAdminPage() {
 
   const cargarVentas = async () => {
     try {
-      const data = await getRegistroVentaPorId();
+      const data = await getRegistrosVenta();
       setVentas(data);
     } catch {
       alert('Error al cargar ventas');
