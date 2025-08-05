@@ -1,0 +1,205 @@
+'use client';
+
+import { useSelector, useDispatch } from 'react-redux';
+import { useRouter } from 'next/navigation';
+import { RootState, AppDispatch } from '@/store';
+import { logout } from '@/store/authSlice';
+import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
+import { updateUsuario } from '@/services/usuarioService';
+
+export default function UserPage() {
+  const dispatch = useDispatch<AppDispatch>();
+  const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const [isClient, setIsClient] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellido: '',
+    email: '',
+    telefono: '',
+    calle: '',
+    fraccionamiento: '',
+    cp: '',
+    ciudad: ''
+  });
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  useEffect(() => {
+    if (isClient && user) {
+      setFormData({
+        nombre: user.nombre ?? '',
+        apellido: user.apellido ?? '',
+        email: user.email ?? '',
+        telefono: user.telefono ?? '',
+        calle: user.direccion?.calle ?? '',
+        fraccionamiento: user.direccion?.fraccionamiento ?? '',
+        cp: user.direccion?.cp ?? '',
+        ciudad: user.direccion?.ciudad ?? ''
+      });
+    } else if (isClient && !user) {
+      router.push('/login');
+    }
+  }, [isClient, user, router]);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push('/login');
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const userId = user?.id;
+      if (!userId) {
+        alert('ID del usuario no disponible');
+        return;
+      }
+
+      const rawPayload = {
+        T_Usuario_Nombre: formData.nombre,
+        T_Usuario_Apellido: formData.apellido,
+        T_Usuario_Email: formData.email,
+        T_Usuario_Telefono: formData.telefono,
+        T_Usuario_Password: 'Temporal123!',
+        T_Usuario_Direccion_Calle: formData.calle,
+        T_Usuario_Direccion_Fraccionamiento: formData.fraccionamiento,
+        T_Usuario_Direccion_CP: formData.cp,
+        T_Usuario_Direccion_Ciudad: formData.ciudad,
+        T_Usuario_Rol: user.rol ?? 'cliente',
+        T_Usuario_Estado: true
+      };
+
+      const payload = Object.fromEntries(
+        Object.entries(rawPayload).filter(([_, v]) => v !== undefined && v !== null && v !== '')
+      );
+
+      await updateUsuario(userId, payload);
+      alert('✅ Datos actualizados correctamente');
+      setEditMode(false);
+    } catch (error) {
+      console.error('❌ Error al actualizar usuario:', error);
+      alert('No se pudo actualizar el usuario');
+    }
+  };
+
+  if (!isClient || !user) return null;
+
+  return (
+    <>
+      <Header />
+      <div style={styles.container}>
+        <h1 style={styles.title}>Bienvenido, {formData.nombre}</h1>
+        {editMode ? (
+          <form onSubmit={handleEditSubmit} style={styles.form}>
+            <input name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleInputChange} style={styles.input} required />
+            <input name="apellido" placeholder="Apellido" value={formData.apellido} onChange={handleInputChange} style={styles.input} required />
+            <input name="email" placeholder="Correo electrónico" type="email" value={formData.email} onChange={handleInputChange} style={styles.input} required />
+            <input name="telefono" placeholder="Teléfono" value={formData.telefono} onChange={handleInputChange} style={styles.input} required />
+            <input name="calle" placeholder="Calle" value={formData.calle} onChange={handleInputChange} style={styles.input} />
+            <input name="fraccionamiento" placeholder="Fraccionamiento" value={formData.fraccionamiento} onChange={handleInputChange} style={styles.input} />
+            <input name="cp" placeholder="Código Postal" value={formData.cp} onChange={handleInputChange} style={styles.input} />
+            <input name="ciudad" placeholder="Ciudad" value={formData.ciudad} onChange={handleInputChange} style={styles.input} />
+
+            <div style={styles.buttonGroup}>
+              <button type="submit" style={styles.primaryButton}>Guardar</button>
+              <button type="button" onClick={() => setEditMode(false)} style={styles.secondaryButton}>Cancelar</button>
+            </div>
+          </form>
+        ) : (
+          <div style={{ marginBottom: '20px' }}>
+            <p style={styles.text}><strong>Email:</strong> {formData.email}</p>
+            <p style={styles.text}><strong>Teléfono:</strong> {formData.telefono}</p>
+            <p style={styles.text}><strong>Dirección:</strong> {formData.calle}, {formData.fraccionamiento}, {formData.cp}, {formData.ciudad}</p>
+            <p style={styles.text}><strong>Rol:</strong> {user.rol}</p>
+          </div>
+        )}
+
+        <div style={styles.buttonGroup}>
+          <button style={styles.primaryButton} onClick={handleLogout}>Cerrar sesión</button>
+          {!editMode && (
+            <button style={styles.secondaryButton} onClick={() => setEditMode(true)}>Editar datos</button>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
+
+const styles: { [key: string]: React.CSSProperties } = {
+  container: {
+    maxWidth: '500px',
+    margin: '80px auto',
+    padding: '30px',
+    backgroundColor: '#fff',
+    borderRadius: '16px',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+    fontFamily: 'Arial, sans-serif',
+    color: '#171717',
+  },
+  title: {
+    fontSize: '26px',
+    color: '#007aff',
+    marginBottom: '24px',
+    textAlign: 'center',
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '14px',
+    marginBottom: '20px',
+  },
+  input: {
+    width: '100%',
+    padding: '12px',
+    fontSize: '15px',
+    border: '1px solid #ccc',
+    borderRadius: '8px',
+    boxSizing: 'border-box',
+    backgroundColor: '#fff',
+  },
+  text: {
+    fontSize: '16px',
+    margin: '12px 0',
+    lineHeight: '1.5',
+    color: '#333',
+  },
+  buttonGroup: {
+    display: 'flex',
+    gap: '12px',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: '20px',
+  },
+  primaryButton: {
+    backgroundColor: '#007aff',
+    color: '#fff',
+    padding: '12px 20px',
+    fontSize: '15px',
+    border: 'none',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease',
+  },
+  secondaryButton: {
+    backgroundColor: 'transparent',
+    color: '#007aff',
+    border: '1px solid #007aff',
+    padding: '12px 20px',
+    fontSize: '15px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease',
+  }
+};
+

@@ -1,0 +1,52 @@
+.homepage-container {
+  font-family: sans-serif;
+  padding: 2rem;
+}
+
+.banner {
+  background-color: #e8e8e8;
+  height: 300px;
+  position: relative;
+  margin-bottom: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.banner-texto {
+  z-index: 2;
+  margin-left: 2rem;
+}
+
+.banner-texto h1 {
+  font-size: 2.5rem;
+  color: #0e1a2b;
+}
+
+.banner-texto p {
+  font-size: 1.2rem;
+  color: #444;
+}
+
+.banner-fondo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 60%;
+  background-image: url('/assets/images/banner-refaccionaria.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+}
+
+.productos-populares h2 {
+  margin-bottom: 1rem;
+  color: #0e1a2b;
+}
+
+.grid-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1.5rem;
+}
