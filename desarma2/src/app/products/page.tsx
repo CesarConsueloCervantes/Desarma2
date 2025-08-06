@@ -1,12 +1,13 @@
 'use client';
 
-import HeaderGuest from '@/components/HeaderGuest';
+import Header from '@/components/Header';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getProductos } from '@/services/productoService';
 import { useCart } from '@/store/provider'; // 👈 Nuevo import
 import type { CSSProperties } from 'react';
+import Footer from '@/components/Footer';
 
 interface Producto {
   _id: string;
@@ -40,18 +41,19 @@ export default function ProductsPage() {
 
   // ✅ Nuevo handler funcional
   const handleAgregarAlCarrito = (producto: Producto) => {
-    addToCart({
-      id: producto._id,
-      name: producto.T_Producto_Nombre,
-      price: producto.T_Producto_Precio,
-      quantity: 1,
-    });
-    router.push('/car');
-  };
+  addToCart({
+    id: producto._id,
+    name: producto.T_Producto_Nombre,
+    price: producto.T_Producto_Precio,
+    quantity: 1,
+    image: producto.T_Producto_Imagen, // ✅ Esto es lo que faltaba
+  });
+  router.push('/car');
+};
 
   return (
     <div>
-      <HeaderGuest />
+      <Header />
       <main style={styles.container}>
         <h1 style={styles.title}>Productos Disponibles</h1>
         <div style={styles.grid}>
@@ -80,6 +82,8 @@ export default function ProductsPage() {
           )}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

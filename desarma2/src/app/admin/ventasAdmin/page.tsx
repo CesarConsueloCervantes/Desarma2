@@ -4,138 +4,33 @@ import HeaderAdmin from '@/components/HeaderAdmin';
 import Footer from '@/components/Footer';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FaTrash, FaEdit, FaFilter, FaPlus } from 'react-icons/fa';
-import {
-  getRegistrosVenta,
-  getRegistroVentaPorId,
-  createRegistroVenta,
-  updateRegistroVenta,
-  deleteRegistroVenta,
-} from '@/services/registroGeneralVentaService';
-import { getProductos } from '@/services/productoService';
-import {
-  get
-}from '@/services/estadoProvinciaService';
+import { getVentas } from '@/services/ventaService';
 
 interface Venta {
   _id?: string;
-  T_RegistroGeneral_Producto_id: string;
-  T_RegistroGeneral_Cantidad: number;
-  T_RegistroGeneral_Producto_Precio: number;
-  T_RegistroGeneral_Estatus: boolean;
-}
-
-interface Producto {
-  _id: string;
-  T_Producto_Nombre: string;
-  T_Producto_Precio: number;
+  T_Venta_FormaPago: string;
+  T_Venta_Subtotal: number;
+  T_Venta_IVA: number;
+  T_Venta_Total: number;
+  T_Venta_Estatus: boolean;
+  createdAt: string;
 }
 
 export default function VentasAdminPage() {
   const [ventas, setVentas] = useState<Venta[]>([]);
-  const [productos, setProductos] = useState<Producto[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Venta>({
-    T_RegistroGeneral_Producto_id: '',
-    T_RegistroGeneral_Cantidad: 1,
-    T_RegistroGeneral_Producto_Precio: 0,
-    T_RegistroGeneral_Estatus: true,
-  });
 
   useEffect(() => {
     cargarVentas();
-    cargarProductos();
   }, []);
 
   const cargarVentas = async () => {
     try {
-      const data = await getRegistrosVenta();
+      const data = await getVentas();
+      console.log('📦 Ventas recibidas:', data);
       setVentas(data);
     } catch {
       alert('Error al cargar ventas');
     }
-  };
-
-  const cargarProductos = async () => {
-    try {
-      const data = await getProductos();
-      setProductos(data);
-    } catch {
-      alert('Error al cargar productos');
-    }
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    if (name === 'T_RegistroGeneral_Producto_id') {
-      const productoSeleccionado = productos.find((p) => p._id === value);
-      if (productoSeleccionado) {
-        setFormData({
-          ...formData,
-          [name]: value,
-          T_RegistroGeneral_Producto_Precio: productoSeleccionado.T_Producto_Precio,
-        });
-      }
-    } else {
-      setFormData({
-        ...formData,
-        [name]:
-          name === 'T_RegistroGeneral_Cantidad'
-            ? parseInt(value)
-            : name === 'T_RegistroGeneral_Estatus'
-            ? value === 'activo'
-            : value,
-      });
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      if (editId) {
-        await updateRegistroVenta(editId, formData);
-        alert('Venta actualizada');
-      } else {
-        await createRegistroVenta(formData);
-        alert('Venta registrada');
-      }
-      setShowForm(false);
-      setEditId(null);
-      resetForm();
-      cargarVentas();
-    } catch {
-      alert('Error al guardar venta');
-    }
-  };
-
-  const handleEdit = (venta: Venta) => {
-    setFormData(venta);
-    setEditId(venta._id ?? null);
-    setShowForm(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (confirm('¿Eliminar esta venta?')) {
-      try {
-        await deleteRegistroVenta(id);
-        alert('Venta eliminada');
-        cargarVentas();
-      } catch {
-        alert('Error al eliminar venta');
-      }
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      T_RegistroGeneral_Producto_id: '',
-      T_RegistroGeneral_Cantidad: 1,
-      T_RegistroGeneral_Producto_Precio: 0,
-      T_RegistroGeneral_Estatus: true,
-    });
   };
 
   return (
@@ -151,101 +46,34 @@ export default function VentasAdminPage() {
           <Link href="/admin/proovedoresAdmin">Proveedores</Link>
           <Link href="/admin/ventasAdmin" className="active">Ventas</Link>
           <Link href="/admin/enviosAdmin">Envíos</Link>
+          <Link href="/admin/paqueteriaPage" >Paqueterías</Link>
         </aside>
 
         <main className="admin-main">
-          <div className="product-actions">
-            <button className="btn-filter"><FaFilter /> Filtrar</button>
-            <button className="btn-add" onClick={() => {
-              setShowForm(true);
-              setEditId(null);
-              resetForm();
-            }}>
-              <FaPlus /> Añadir
-            </button>
-          </div>
-
-          {showForm && (
-            <div className="product-form-container">
-              <form onSubmit={handleSubmit} className="product-form">
-                <div className="form-fields">
-                  <select
-                    name="T_RegistroGeneral_Producto_id"
-                    value={formData.T_RegistroGeneral_Producto_id}
-                    onChange={handleChange}
-                    required
-                  >
-                    <option value="">Seleccione un producto</option>
-                    {productos.map((producto) => (
-                      <option key={producto._id} value={producto._id}>
-                        {producto.T_Producto_Nombre}
-                      </option>
-                    ))}
-                  </select>
-
-                  <input
-                    type="number"
-                    name="T_RegistroGeneral_Cantidad"
-                    value={formData.T_RegistroGeneral_Cantidad}
-                    onChange={handleChange}
-                    placeholder="Cantidad"
-                    required
-                  />
-
-                  <input
-                    type="number"
-                    value={formData.T_RegistroGeneral_Producto_Precio}
-                    readOnly
-                    placeholder="Precio"
-                  />
-
-                  <select
-                    name="T_RegistroGeneral_Estatus"
-                    value={formData.T_RegistroGeneral_Estatus ? 'activo' : 'inactivo'}
-                    onChange={handleChange}
-                  >
-                    <option value="activo">Activo</option>
-                    <option value="inactivo">Inactivo</option>
-                  </select>
-
-                  <div className="form-actions">
-                    <button type="submit" className="btn-save">Guardar</button>
-                    <button type="button" className="btn-back" onClick={() => {
-                      setShowForm(false);
-                      setEditId(null);
-                    }}>Cancelar</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          )}
+          <h2>📊 Ventas registradas</h2>
 
           <table className="product-table">
             <thead>
               <tr>
-                <th>Producto</th>
-                <th>Cantidad</th>
-                <th>Precio</th>
+                <th>Forma de pago</th>
+                <th>Subtotal</th>
+                <th>IVA</th>
+                <th>Total</th>
                 <th>Estatus</th>
-                <th>Acciones</th>
+                <th>Fecha</th>
               </tr>
             </thead>
             <tbody>
-              {ventas.map((venta) => {
-                const producto = productos.find(p => p._id === venta.T_RegistroGeneral_Producto_id);
-                return (
-                  <tr key={venta._id}>
-                    <td>{producto?.T_Producto_Nombre ?? 'Desconocido'}</td>
-                    <td>{venta.T_RegistroGeneral_Cantidad}</td>
-                    <td>${venta.T_RegistroGeneral_Producto_Precio.toFixed(2)}</td>
-                    <td>{venta.T_RegistroGeneral_Estatus ? 'Activo' : 'Inactivo'}</td>
-                    <td className="actions">
-                      <button className="btn-edit" onClick={() => handleEdit(venta)}>✏️</button>
-                      <button className="btn-delete" onClick={() => handleDelete(venta._id!)}>🗑</button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {ventas.map((venta) => (
+                <tr key={venta._id}>
+                  <td>{venta.T_Venta_FormaPago}</td>
+                  <td>${venta.T_Venta_Subtotal?.toFixed(2) ?? '—'}</td>
+                  <td>${venta.T_Venta_IVA?.toFixed(2) ?? '—'}</td>
+                  <td>${venta.T_Venta_Total?.toFixed(2) ?? '—'}</td>
+                  <td>{venta.T_Venta_Estatus ? '✅ Activa' : '❌ Inactiva'}</td>
+                  <td>{new Date(venta.createdAt).toLocaleDateString()}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </main>
@@ -254,3 +82,4 @@ export default function VentasAdminPage() {
     </div>
   );
 }
+

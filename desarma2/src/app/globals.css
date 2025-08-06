@@ -26,40 +26,7 @@ body {
   line-height: 1.5;
 }
 
-header {
-  background-color: #475B85; /* Azul base */
-  padding: 12px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  box-shadow: none; /* Eliminamos sombra clara */
-  height: 60px;
-  color: white;
 
-}
-.header-logo img {
-  height: auto;
-  display: block;
-}
-
-
-header .logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: var(--accent-color);
-}
-
-header nav a {
-  margin: 0 12px;
-  text-decoration: none;
-  color: #444;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-header nav a:hover {
-  color: var(--accent-color);
-}
 
 .search-bar {
   display: flex;
@@ -315,29 +282,7 @@ h2 {
 .contact-form button:hover {
   background-color: #0056b3;
 }
-.header-guest {
-  background-color: #475B85;
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  height: 60px;
-}
 
-.header-logo img {
-  height: auto;
-}
-
-.header-icon {
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-}
-
-.header-icon:hover {
-  opacity: 0.8;
-}
 .header-admin {
   background-color: #475B85;
   padding: 10px 20px;
@@ -353,6 +298,7 @@ h2 {
   align-items: center;
   gap: 16px;
 }
+
 
 .icon-menu {
   color: white;

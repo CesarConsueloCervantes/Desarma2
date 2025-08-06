@@ -11,13 +11,17 @@ import {
   updateEnvio,
   deleteEnvio,
 } from '@/services/envioService';
+import { getVentas } from '@/services/ventaService';
+import { getPaqueterias } from '@/services/paqueteriaService';
+import { getEstadosProvincias} from '@/services/estadoProvinciaService';
+import { getPaises } from '@/services/paisService';
 
 interface Envio {
   _id?: string;
   T_Envio_Venta_id: string;
   T_Envio_Servicio_Paqueteria_id: string;
   T_Envio_Direccion_Calle: string;
-  T_Envio_Direccion_Fraccionamiento: string;
+  T_Envio_Direccion_Fraccionamiento: string;  
   T_Envio_Direccion_CP: string;
   T_Envio_Direccion_Ciudad: string;
   T_Envio_Direccion_ProvinciaEstado: string;
@@ -25,52 +29,57 @@ interface Envio {
   T_Envio_Estatus: boolean;
 }
 
-const estadosMexico = [
-  "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas",
-  "Chihuahua", "Ciudad de México", "Coahuila", "Colima", "Durango", "Estado de México",
-  "Guanajuato", "Guerrero", "Hidalgo", "Jalisco", "Michoacán", "Morelos", "Nayarit",
-  "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo", "San Luis Potosí",
-  "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"
-];
-
 export default function EnviosAdminPage() {
   const [envios, setEnvios] = useState<Envio[]>([]);
+  const [ventas, setVentas] = useState<any[]>([]);
+  const [paqueterias, setPaqueterias] = useState<any[]>([]);
+  const [estados, setEstados] = useState<any[]>([]);
+  const [paises, setPaises] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
+
   const [formData, setFormData] = useState<Envio>({
     T_Envio_Venta_id: '',
-    T_Envio_Servicio_Paqueteria_id: 'DHL',
+    T_Envio_Servicio_Paqueteria_id: '',
     T_Envio_Direccion_Calle: '',
     T_Envio_Direccion_Fraccionamiento: '',
     T_Envio_Direccion_CP: '',
     T_Envio_Direccion_Ciudad: '',
-    T_Envio_Direccion_ProvinciaEstado: '',
-    T_Envio_Direccion_Pais: 'México',
+    T_Envio_Direccion_ProvinciaEstado: '64d4fa12e1a3b7f8a9c67890',
+    T_Envio_Direccion_Pais: '64d4fa12e1a3b7f8a9c67890',
     T_Envio_Estatus: true,
   });
-  const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
-    cargarEnvios();
+    cargarDatos();
   }, []);
 
-  const cargarEnvios = async () => {
+  const cargarDatos = async () => {
     try {
-      const data = await getEnvios();
-      setEnvios(data);
+      const [envioData, ventasData, paqs, estadosData, paisesData] = await Promise.all([
+        getEnvios(),
+        getVentas(),
+        getPaqueterias(),
+        getEstadosProvincias(),
+        getPaises(),
+      ]);
+      setEnvios(envioData);
+      setVentas(ventasData);
+      setPaqueterias(paqs);
+      setEstados(estadosData);
+      setPaises(paisesData);
     } catch {
-      alert('Error al cargar envíos');
+      alert('Error al cargar datos');
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  const target = e.target as HTMLInputElement | HTMLSelectElement;
-  const { name, value, type } = target;
-
-  setFormData(prev => ({
-    ...prev,
-    [name]: type === 'checkbox' ? (target as HTMLInputElement).checked : value,
-  }));
-};
+    const { name, value, type } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
+    }));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,8 +94,8 @@ export default function EnviosAdminPage() {
       resetForm();
       setShowForm(false);
       setEditId(null);
-      cargarEnvios();
-    } catch (error) {
+      cargarDatos();
+    } catch {
       alert('Error al guardar el envío');
     }
   };
@@ -94,13 +103,13 @@ export default function EnviosAdminPage() {
   const resetForm = () => {
     setFormData({
       T_Envio_Venta_id: '',
-      T_Envio_Servicio_Paqueteria_id: 'DHL',
+      T_Envio_Servicio_Paqueteria_id: '',
       T_Envio_Direccion_Calle: '',
       T_Envio_Direccion_Fraccionamiento: '',
       T_Envio_Direccion_CP: '',
       T_Envio_Direccion_Ciudad: '',
-      T_Envio_Direccion_ProvinciaEstado: '',
-      T_Envio_Direccion_Pais: 'México',
+      T_Envio_Direccion_ProvinciaEstado: '64d4fa12e1a3b7f8a9c67898',
+      T_Envio_Direccion_Pais: '64d4fa12e1a3b7f8a9c67899',
       T_Envio_Estatus: true,
     });
   };
@@ -116,7 +125,7 @@ export default function EnviosAdminPage() {
       try {
         await deleteEnvio(id);
         alert('Envío eliminado');
-        cargarEnvios();
+        cargarDatos();
       } catch {
         alert('Error al eliminar envío');
       }
@@ -136,6 +145,7 @@ export default function EnviosAdminPage() {
           <Link href="/admin/proovedoresAdmin">Proveedores</Link>
           <Link href="/admin/ventasAdmin">Ventas</Link>
           <Link href="/admin/enviosAdmin" className="active">Envíos</Link>
+          <Link href="/admin/paqueteriaPage" >Paqueterías</Link>
         </aside>
 
         <main className="admin-main">
@@ -154,26 +164,35 @@ export default function EnviosAdminPage() {
             <div className="product-form-container">
               <form onSubmit={handleSubmit} className="product-form">
                 <div className="form-fields">
-                  <input name="T_Envio_Venta_id" placeholder="ID Venta" value={formData.T_Envio_Venta_id} onChange={handleChange} required />
-                  <select name="T_Envio_Servicio_Paqueteria_id" value={formData.T_Envio_Servicio_Paqueteria_id} onChange={handleChange} required>
-                    <option value="DHL">DHL</option>
+                  {/* Venta */}
+                  <select name="T_Envio_Venta_id" value={formData.T_Envio_Venta_id} onChange={handleChange} required>
+                    <option value="">Seleccione una venta</option>
+                    {ventas.map((venta) => (
+                      <option key={venta._id} value={venta._id}>
+                        {venta._id}
+                      </option>
+                    ))}
                   </select>
+
+                  {/* Paquetería */}
+                  <select name="T_Envio_Servicio_Paqueteria_id" value={formData.T_Envio_Servicio_Paqueteria_id} onChange={handleChange} required>
+                    <option value="">Seleccione paquetería</option>
+                    {paqueterias.map((paq) => (
+                      <option key={paq._id} value={paq._id}>
+                        {paq.nombre}
+                      </option>
+                    ))}
+                  </select>
+
+                  {/* Dirección */}
                   <input name="T_Envio_Direccion_Calle" placeholder="Calle" value={formData.T_Envio_Direccion_Calle} onChange={handleChange} required />
                   <input name="T_Envio_Direccion_Fraccionamiento" placeholder="Fraccionamiento" value={formData.T_Envio_Direccion_Fraccionamiento} onChange={handleChange} required />
                   <input name="T_Envio_Direccion_CP" placeholder="Código Postal" value={formData.T_Envio_Direccion_CP} onChange={handleChange} required />
                   <input name="T_Envio_Direccion_Ciudad" placeholder="Ciudad" value={formData.T_Envio_Direccion_Ciudad} onChange={handleChange} required />
-                  
-                  <select name="T_Envio_Direccion_ProvinciaEstado" value={formData.T_Envio_Direccion_ProvinciaEstado} onChange={handleChange} required>
-                    <option value="">Seleccione un estado</option>
-                    {estadosMexico.map((estado, index) => (
-                      <option key={index} value={estado}>{estado}</option>
-                    ))}
-                  </select>
 
-                  <select name="T_Envio_Direccion_Pais" value={formData.T_Envio_Direccion_Pais} onChange={handleChange} required>
-                    <option value="México">México</option>
-                  </select>
 
+
+                  {/* Estatus */}
                   <label>
                     <input type="checkbox" name="T_Envio_Estatus" checked={formData.T_Envio_Estatus} onChange={handleChange} />
                     Estatus Activo
@@ -196,7 +215,7 @@ export default function EnviosAdminPage() {
               <tr>
                 <th>Venta</th>
                 <th>Paquetería</th>
-                <th>Dirección</th>
+                <th>Calle</th>
                 <th>Ciudad</th>
                 <th>Estado</th>
                 <th>País</th>
@@ -205,7 +224,7 @@ export default function EnviosAdminPage() {
               </tr>
             </thead>
             <tbody>
-              {envios.map(envio => (
+              {envios.map((envio) => (
                 <tr key={envio._id}>
                   <td>{envio.T_Envio_Venta_id}</td>
                   <td>{envio.T_Envio_Servicio_Paqueteria_id}</td>
@@ -228,3 +247,4 @@ export default function EnviosAdminPage() {
     </div>
   );
 }
+

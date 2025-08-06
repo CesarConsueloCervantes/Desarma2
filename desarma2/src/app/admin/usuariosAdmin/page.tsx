@@ -4,13 +4,9 @@ import HeaderAdmin from '@/components/HeaderAdmin';
 import Footer from '@/components/Footer';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { FaTrash, FaEdit, FaFilter, FaPlus } from 'react-icons/fa';
-import {
-  getUsuarios,
-  createUsuario,
-  updateUsuario,
-  deleteUsuario
-} from '@/services/usuarioService';
+import { getUsuarios, updateUsuario } from '@/services/usuarioService';
+import { getPaises } from '@/services/paisService';
+import { getEstadosProvincias } from '@/services/estadoProvinciaService';
 
 interface Usuario {
   _id?: string;
@@ -18,40 +14,38 @@ interface Usuario {
   T_Usuario_Apellido: string;
   T_Usuario_Email: string;
   T_Usuario_Telefono: string;
-  T_Usuario_Password: string;
-  T_Usuario_Direccion_Calle?: string;
-  T_Usuario_Direccion_Fraccionamiento?: string;
-  T_Usuario_Direccion_CP?: string;
-  T_Usuario_Direccion_Ciudad?: string;
-  T_Usuario_Direccion_ProvinciaEstado?: string;
-  T_Usuario_Direccion_Pais?: string;
   T_Usuario_Rol: string;
   T_Usuario_Estado: boolean;
+  T_Usuario_Pais?: {
+    _id: string;
+    C_Pais_Nombre: string;
+  };
+  T_Usuario_EstadoProvincia?: {
+    _id: string;
+    C_EstadoProvincia_Nombre: string;
+  };
+}
+
+interface Pais {
+  _id: string;
+  C_Pais_Nombre: string;
+}
+
+interface EstadoProvincia {
+  _id: string;
+  C_EstadoProvincia_Nombre: string;
 }
 
 export default function UserAdminPage() {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
-  const [showForm, setShowForm] = useState(false);
-  const [formMode, setFormMode] = useState<'add' | 'edit'>('add');
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<Usuario>({
-    T_Usuario_Nombre: '',
-    T_Usuario_Apellido: '',
-    T_Usuario_Email: '',
-    T_Usuario_Telefono: '',
-    T_Usuario_Password: '',
-    T_Usuario_Direccion_Calle: '',
-    T_Usuario_Direccion_Fraccionamiento: '',
-    T_Usuario_Direccion_CP: '',
-    T_Usuario_Direccion_Ciudad: '',
-    T_Usuario_Direccion_ProvinciaEstado: '',
-    T_Usuario_Direccion_Pais: '',
-    T_Usuario_Rol: 'cliente',
-    T_Usuario_Estado: true
-  });
+  const [paises, setPaises] = useState<Pais[]>([]);
+  const [estados, setEstados] = useState<EstadoProvincia[]>([]);
+  const [usuarioEditando, setUsuarioEditando] = useState<Usuario | null>(null);
 
   useEffect(() => {
     cargarUsuarios();
+    cargarPaises();
+    cargarEstados();
   }, []);
 
   const cargarUsuarios = async () => {
@@ -63,70 +57,48 @@ export default function UserAdminPage() {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  const handleAddClick = () => {
-    setFormMode('add');
-    setCurrentUserId(null);
-    resetForm();
-    setShowForm(true);
-  };
-
-  const handleEditClick = (usuario: Usuario) => {
-    setFormMode('edit');
-    setCurrentUserId(usuario._id ?? null);
-    setFormData(usuario);
-    setShowForm(true);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (confirm('¿Eliminar este usuario?')) {
-      try {
-        await deleteUsuario(id);
-        alert('Usuario eliminado');
-        cargarUsuarios();
-      } catch (err) {
-        alert('Error al eliminar usuario');
-      }
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const cargarPaises = async () => {
     try {
-      if (formMode === 'add') {
-        await createUsuario(formData);
-        alert('Usuario creado');
-      } else if (formMode === 'edit' && currentUserId) {
-        await updateUsuario(currentUserId, formData);
-        alert('Usuario actualizado');
-      }
-      setShowForm(false);
-      cargarUsuarios();
-    } catch (err) {
-      alert('Error al guardar usuario');
+      const data = await getPaises();
+      setPaises(data);
+    } catch (error) {
+      console.error('Error al cargar países');
     }
   };
 
-  const resetForm = () => {
-    setFormData({
-      T_Usuario_Nombre: '',
-      T_Usuario_Apellido: '',
-      T_Usuario_Email: '',
-      T_Usuario_Telefono: '',
-      T_Usuario_Password: '',
-      T_Usuario_Direccion_Calle: '',
-      T_Usuario_Direccion_Fraccionamiento: '',
-      T_Usuario_Direccion_CP: '',
-      T_Usuario_Direccion_Ciudad: '',
-      T_Usuario_Direccion_ProvinciaEstado: '',
-      T_Usuario_Direccion_Pais: '',
-      T_Usuario_Rol: 'cliente',
-      T_Usuario_Estado: true
-    });
+  const cargarEstados = async () => {
+    try {
+      const data = await getEstadosProvincias();
+      setEstados(data);
+    } catch (error) {
+      console.error('Error al cargar estados/provincias');
+    }
+  };
+
+  const handleEdit = (usuario: Usuario) => {
+    setUsuarioEditando(usuario);
+  };
+
+  const handleUpdate = async () => {
+    if (!usuarioEditando?._id) return;
+
+    const {  ...payload } = usuarioEditando;
+
+    // Solo enviamos los IDs de país y estado
+    const dataToSend = {
+      ...payload,
+      T_Usuario_Pais: usuarioEditando.T_Usuario_Pais?._id,
+      T_Usuario_EstadoProvincia: usuarioEditando.T_Usuario_EstadoProvincia?._id,
+    };
+
+    try {
+      await updateUsuario(usuarioEditando._id, dataToSend);
+      alert('Usuario actualizado');
+      setUsuarioEditando(null);
+      cargarUsuarios();
+    } catch (error) {
+      alert('Error al actualizar usuario');
+    }
   };
 
   return (
@@ -134,65 +106,22 @@ export default function UserAdminPage() {
       <HeaderAdmin />
 
       <div className="admin-content">
-          <aside className="sidebar">
-            <h2>Panel Principal</h2>
-            <Link href="/admin/panel">Inicio</Link>
-            <Link href="/admin/usuariosAdmin"className="active">Usuarios</Link>
-            <Link href="/admin/productsAdmin" >Productos</Link>
-            <Link href="/admin/ordenCompra">Compras</Link>
-            <Link href="/admin/proovedoresAdmin">Proveedores</Link>
-            <Link href="/admin/ventasAdmin">Ventas</Link>
-            <Link href="/admin/enviosAdmin">Envios</Link>
-          </aside>
+        <aside className="sidebar">
+          <h2>Panel Principal</h2>
+          <Link href="/admin/panel">Inicio</Link>
+          <Link href="/admin/usuariosAdmin" className="active">Usuarios</Link>
+          <Link href="/admin/productsAdmin">Productos</Link>
+          <Link href="/admin/ordenCompra">Compras</Link>
+          <Link href="/admin/proovedoresAdmin">Proveedores</Link>
+          <Link href="/admin/ventasAdmin">Ventas</Link>
+          <Link href="/admin/enviosAdmin">Envíos</Link>
+          <Link href="/admin/paqueteriaPage">Paqueterías</Link>
+        </aside>
 
         <main className="main-content">
-          <div className="product-actions">
-            <button className="btn-filter"><FaFilter className="mr-1" /> Filtros</button>
-            <button className="btn-add" onClick={handleAddClick}><FaPlus className="mr-1" /> Añadir</button>
-          </div>
+          <h2 className="section-title">👥 Usuarios registrados</h2>
 
-          {showForm && (
-            <div className="product-form-container">
-              <form className="product-form" onSubmit={handleSubmit}>
-                <div className="form-fields">
-                  <div className="form-row">
-                    <input name="T_Usuario_Nombre" value={formData.T_Usuario_Nombre} onChange={handleChange} placeholder="Nombre" required />
-                    <input name="T_Usuario_Apellido" value={formData.T_Usuario_Apellido} onChange={handleChange} placeholder="Apellido" required />
-                  </div>
-                  <div className="form-row">
-                    <input name="T_Usuario_Email" type="email" value={formData.T_Usuario_Email} onChange={handleChange} placeholder="Correo electrónico" required />
-                    <input name="T_Usuario_Telefono" value={formData.T_Usuario_Telefono} onChange={handleChange} placeholder="Teléfono (10 dígitos)" required />
-                  </div>
-                  <input name="T_Usuario_Password" type="password" value={formData.T_Usuario_Password} onChange={handleChange} placeholder="Contraseña" required />
-                  <input name="T_Usuario_Direccion_Calle" value={formData.T_Usuario_Direccion_Calle} onChange={handleChange} placeholder="Calle" />
-                  <input name="T_Usuario_Direccion_Fraccionamiento" value={formData.T_Usuario_Direccion_Fraccionamiento} onChange={handleChange} placeholder="Fraccionamiento" />
-                  <input name="T_Usuario_Direccion_CP" value={formData.T_Usuario_Direccion_CP} onChange={handleChange} placeholder="Código Postal" />
-                  <input name="T_Usuario_Direccion_Ciudad" value={formData.T_Usuario_Direccion_Ciudad} onChange={handleChange} placeholder="Ciudad" />
-                  <div className="form-row">
-                    <input name="T_Usuario_Direccion_ProvinciaEstado" value={formData.T_Usuario_Direccion_ProvinciaEstado} onChange={handleChange} placeholder="Provincia/Estado (ID)" />
-                    <input name="T_Usuario_Direccion_Pais" value={formData.T_Usuario_Direccion_Pais} onChange={handleChange} placeholder="País (ID)" />
-                  </div>
-                  <div className="form-row">
-                    <select name="T_Usuario_Rol" value={formData.T_Usuario_Rol} onChange={handleChange}>
-                      <option value="cliente">Cliente</option>
-                      <option value="administrador">Administrador</option>
-                    </select>
-                    <select name="T_Usuario_Estado" value={formData.T_Usuario_Estado ? 'true' : 'false'} onChange={(e) => setFormData({ ...formData, T_Usuario_Estado: e.target.value === 'true' })}>
-                      <option value="true">Activo</option>
-                      <option value="false">Inactivo</option>
-                    </select>
-                  </div>
-
-                  <div className="form-actions">
-                    <button type="submit" className="btn-save">Guardar</button>
-                    <button type="button" className="btn-back" onClick={() => setShowForm(false)}>Cancelar</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          )}
-
-          <table className="admin-table">
+          <table className="product-table">
             <thead>
               <tr>
                 <th>Nombre</th>
@@ -200,6 +129,8 @@ export default function UserAdminPage() {
                 <th>Teléfono</th>
                 <th>Rol</th>
                 <th>Estado</th>
+                <th>País</th>
+                <th>Estado/Provincia</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -210,15 +141,84 @@ export default function UserAdminPage() {
                   <td>{u.T_Usuario_Email}</td>
                   <td>{u.T_Usuario_Telefono}</td>
                   <td>{u.T_Usuario_Rol}</td>
-                  <td>{u.T_Usuario_Estado ? 'Activo' : 'Inactivo'}</td>
-                  <td className="actions">
-                    <button className="btn-edit" onClick={() => handleEditClick(u)}><FaEdit /></button>
-                    <button className="btn-delete" onClick={() => handleDelete(u._id!)}><FaTrash /></button>
+                  <td>
+                    <span style={{
+                      display: 'inline-block',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      fontWeight: 600,
+                      fontSize: '13px',
+                      backgroundColor: u.T_Usuario_Estado ? '#ffe5b4' : '#dc3545',
+                      color: u.T_Usuario_Estado ? '#333' : '#fff',
+                    }}>
+                      {u.T_Usuario_Estado ? 'Activo' : 'Inactivo'}
+                    </span>
+                  </td>
+                  <td>{u.T_Usuario_Pais?.C_Pais_Nombre || '—'}</td>
+                  <td>{u.T_Usuario_EstadoProvincia?.C_EstadoProvincia_Nombre || '—'}</td>
+                  <td>
+                    <button onClick={() => handleEdit(u)}>Editar</button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+
+          {usuarioEditando && (
+            <div className="edit-form">
+              <h3>✏️ Editar usuario</h3>
+              <input
+                type="text"
+                value={usuarioEditando.T_Usuario_Nombre}
+                onChange={(e) => setUsuarioEditando({ ...usuarioEditando, T_Usuario_Nombre: e.target.value })}
+                placeholder="Nombre"
+              />
+              <input
+                type="text"
+                value={usuarioEditando.T_Usuario_Apellido}
+                onChange={(e) => setUsuarioEditando({ ...usuarioEditando, T_Usuario_Apellido: e.target.value })}
+                placeholder="Apellido"
+              />
+              <input
+                type="email"
+                value={usuarioEditando.T_Usuario_Email}
+                onChange={(e) => setUsuarioEditando({ ...usuarioEditando, T_Usuario_Email: e.target.value })}
+                placeholder="Email"
+              />
+              <input
+                type="text"
+                value={usuarioEditando.T_Usuario_Telefono}
+                onChange={(e) => setUsuarioEditando({ ...usuarioEditando, T_Usuario_Telefono: e.target.value })}
+                placeholder="Teléfono"
+              />
+              <select
+                value={usuarioEditando.T_Usuario_Pais?._id || ''}
+                onChange={(e) => {
+                  const selected = paises.find(p => p._id === e.target.value);
+                  setUsuarioEditando({ ...usuarioEditando, T_Usuario_Pais: selected });
+                }}
+              >
+                <option value="">Seleccionar país</option>
+                {paises.map(p => (
+                  <option key={p._id} value={p._id}>{p.C_Pais_Nombre}</option>
+                ))}
+              </select>
+              <select
+                value={usuarioEditando.T_Usuario_EstadoProvincia?._id || ''}
+                onChange={(e) => {
+                  const selected = estados.find(ep => ep._id === e.target.value);
+                  setUsuarioEditando({ ...usuarioEditando, T_Usuario_EstadoProvincia: selected });
+                }}
+              >
+                <option value="">Seleccionar estado/provincia</option>
+                {estados.map(ep => (
+                  <option key={ep._id} value={ep._id}>{ep.C_EstadoProvincia_Nombre}</option>
+                ))}
+              </select>
+              <button onClick={handleUpdate}>Guardar cambios</button>
+              <button onClick={() => setUsuarioEditando(null)}>Cancelar</button>
+            </div>
+          )}
         </main>
       </div>
 
@@ -226,4 +226,6 @@ export default function UserAdminPage() {
     </div>
   );
 }
+
+
 

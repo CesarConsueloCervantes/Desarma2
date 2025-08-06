@@ -23,9 +23,22 @@ export const getVentaPorId = async (id) => {
 // Crear una nueva venta
 export const createVenta = async (ventaData) => {
   try {
+    // Validación: evitar array
+    if (Array.isArray(ventaData)) {
+      console.warn('⚠️ El payload es un array, se esperaba un objeto plano.');
+      ventaData = ventaData[0]; // O lanza error si prefieres
+    }
+
+    console.log('📦 Payload enviado a /venta:', JSON.stringify(ventaData, null, 2));
+
     const response = await api.post('/venta', ventaData);
     return response.data;
   } catch (error) {
+    if (error.response?.data?.errors) {
+      console.error('❌ Errores de validación:', error.response.data.errors);
+    } else {
+      console.error('❌ Error al crear venta:', error.response?.data || error.message);
+    }
     throw error;
   }
 };

@@ -128,6 +128,7 @@ export default function ProductsAdminPage() {
             <Link href="/admin/proovedoresAdmin">Proveedores</Link>
             <Link href="/admin/ventasAdmin">Ventas</Link>
             <Link href="/admin/enviosAdmin">Envios</Link>
+            <Link href="/admin/paqueteriaPage" >Paqueterías</Link>
           </aside>
 
           <div className="main-content">

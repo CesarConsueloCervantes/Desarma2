@@ -8,6 +8,7 @@ import {
   updateRegistroCompra,
   deleteRegistroCompra
 } from '@/services/registroGeneralCompraService';
+import api from '@/config/services';
 import HeaderAdmin from '@/components/HeaderAdmin';
 
 interface RegistroCompra {
@@ -19,8 +20,20 @@ interface RegistroCompra {
   T_RegistroGeneral_Estatus: boolean;
 }
 
+interface Compra {
+  _id: string;
+}
+
+interface Producto {
+  _id: string;
+  T_Producto_Nombre: string;
+  T_Producto_Precio?: number;
+}
+
 export default function OrdenCompraAdminPage() {
   const [registros, setRegistros] = useState<RegistroCompra[]>([]);
+  const [compras, setCompras] = useState<Compra[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<RegistroCompra>({
     T_Compra_id: '',
@@ -33,6 +46,8 @@ export default function OrdenCompraAdminPage() {
 
   useEffect(() => {
     cargarRegistros();
+    cargarCompras();
+    cargarProductos();
   }, []);
 
   const cargarRegistros = async () => {
@@ -44,20 +59,48 @@ export default function OrdenCompraAdminPage() {
     }
   };
 
+  const cargarCompras = async () => {
+    try {
+      const res = await api.get('/compra');
+      setCompras(res.data);
+    } catch {
+      alert('Error al cargar compras');
+    }
+  };
+
+  const cargarProductos = async () => {
+    try {
+      const res = await api.get('/producto');
+      setProductos(res.data);
+    } catch {
+      alert('Error al cargar productos');
+    }
+  };
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]:
-        name === 'T_RegistroGeneral_Cantidad' ||
-        name === 'T_RegistroGeneral_Producto_Precio'
-          ? Number(value)
-          : name === 'T_RegistroGeneral_Estatus'
-          ? value === 'true'
-          : value,
-    });
+
+    if (name === 'T_RegistroGeneral_Producto_id') {
+      const productoSeleccionado = productos.find((p) => p._id === value);
+      setFormData({
+        ...formData,
+        [name]: value,
+        T_RegistroGeneral_Producto_Precio: productoSeleccionado?.T_Producto_Precio ?? formData.T_RegistroGeneral_Producto_Precio,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]:
+          name === 'T_RegistroGeneral_Cantidad' ||
+          name === 'T_RegistroGeneral_Producto_Precio'
+            ? Number(value)
+            : name === 'T_RegistroGeneral_Estatus'
+            ? value === 'true'
+            : value,
+      });
+    }
   };
 
   const resetForm = () => {
@@ -121,6 +164,7 @@ export default function OrdenCompraAdminPage() {
             <Link href="/admin/proovedoresAdmin">Proveedores</Link>
             <Link href="/admin/ventasAdmin">Ventas</Link>
             <Link href="/admin/enviosAdmin">Envios</Link>
+            <Link href="/admin/paqueteriaPage" >Paqueterías</Link>
           </aside>
 
           <div className="main-content">
@@ -144,18 +188,26 @@ export default function OrdenCompraAdminPage() {
                   <div className="form-fields">
                     <input
                       name="T_Compra_id"
-                      placeholder="ID Compra"
+                      placeholder="ID de la compra (ObjectId)"
                       value={formData.T_Compra_id}
                       onChange={handleChange}
                       required
                     />
-                    <input
+
+                    <select
                       name="T_RegistroGeneral_Producto_id"
-                      placeholder="ID Producto"
                       value={formData.T_RegistroGeneral_Producto_id}
                       onChange={handleChange}
                       required
-                    />
+                    >
+                      <option value="">Selecciona un producto</option>
+                      {productos.map((producto) => (
+                        <option key={producto._id} value={producto._id}>
+                          {producto.T_Producto_Nombre || producto._id}
+                        </option>
+                      ))}
+                    </select>
+
                     <input
                       name="T_RegistroGeneral_Cantidad"
                       type="number"
@@ -205,19 +257,22 @@ export default function OrdenCompraAdminPage() {
                 </tr>
               </thead>
               <tbody>
-                {registros.map((registro) => (
-                  <tr key={registro._id}>
-                    <td>{registro.T_Compra_id}</td>
-                    <td>{registro.T_RegistroGeneral_Producto_id}</td>
-                    <td>{registro.T_RegistroGeneral_Cantidad}</td>
-                    <td>${registro.T_RegistroGeneral_Producto_Precio.toFixed(2)}</td>
-                    <td>{registro.T_RegistroGeneral_Estatus ? 'Activo' : 'Cancelado'}</td>
-                    <td className="actions">
-                      <button className="btn-edit" onClick={() => handleEdit(registro)}>✏️</button>
-                      <button className="btn-delete" onClick={() => handleDelete(registro._id!)}>🗑</button>
-                    </td>
-                  </tr>
-                ))}
+                {registros.map((registro) => {
+                  const producto = productos.find(p => p._id === registro.T_RegistroGeneral_Producto_id);
+                  return (
+                    <tr key={registro._id}>
+                      <td>{registro.T_Compra_id}</td>
+                      <td>{producto?.T_Producto_Nombre ?? 'Desconocido'}</td>
+                      <td>{registro.T_RegistroGeneral_Cantidad}</td>
+                      <td>${registro.T_RegistroGeneral_Producto_Precio.toFixed(2)}</td>
+                      <td>{registro.T_RegistroGeneral_Estatus ? 'Activo' : 'Cancelado'}</td>
+                      <td className="actions">
+                        <button className="btn-edit" onClick={() => handleEdit(registro)}>✏️</button>
+                        <button className="btn-delete" onClick={() => handleDelete(registro._id!)}>🗑</button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
 

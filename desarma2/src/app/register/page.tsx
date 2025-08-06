@@ -23,103 +23,106 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div style={styles.main}>
       <HeaderGuest />
-      <main style={styles.container}>
+      <div style={styles.container}>
         <h1 style={styles.title}>Registro</h1>
-        <form onSubmit={handleSubmit} style={styles.form}>
-          <div style={styles.row}>
+        <div style={styles.box}>
+          <form onSubmit={handleSubmit} style={styles.form}>
+            <div style={styles.row}>
+              <input
+                type="text"
+                placeholder="Nombre"
+                style={styles.input}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+              <input
+                type="text"
+                placeholder="Apellido"
+                style={styles.input}
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                required
+              />
+            </div>
             <input
-              type="text"
-              placeholder="Nombre"
+              type="email"
+              placeholder="Correo electrónico"
               style={styles.input}
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
             <input
-              type="text"
-              placeholder="Apellido"
+              type="password"
+              placeholder="Contraseña"
               style={styles.input}
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
-          </div>
-          <input
-            type="email"
-            placeholder="Correo electrónico"
-            style={styles.inputFull}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Contraseña"
-            style={styles.inputFull}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-
-          <select style={styles.inputFull} value="cliente" disabled>
-            <option value="cliente">Rol: Cliente</option>
-          </select>
-
-          <button type="submit" style={styles.button}>Registrarse</button>
-        </form>
-      </main>
+            <button type="submit" style={styles.button}>Registrarse</button>
+          </form>
+        </div>
+      </div>
     </div>
   );
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  main: {
+    minHeight: '100vh',
+    background: 'linear-gradient(to bottom right, #0F172A, #1E293B)',
+    color: 'white',
+    padding: '2rem',
+    fontFamily: 'Arial, sans-serif',
+  },
   container: {
-    maxWidth: '400px',
-    margin: '100px auto',
-    padding: '30px',
-    backgroundColor: '#fff',
-    borderRadius: '16px',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
-    textAlign: 'left',
-    fontFamily: 'sans-serif',
+    maxWidth: '600px',
+    margin: '0 auto',
   },
   title: {
-    fontSize: '24px',
-    marginBottom: '20px',
-    textAlign: 'center'
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
+    color: '#38BDF8',
+    textAlign: 'center',
+    marginBottom: '2rem',
+  },
+  box: {
+    backgroundColor: '#1E293B',
+    padding: '2rem',
+    borderRadius: '1rem',
+    boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '14px',
+    gap: '1rem',
   },
   row: {
     display: 'flex',
-    gap: '10px',
+    gap: '1rem',
   },
   input: {
     flex: 1,
-    padding: '12px',
-    fontSize: '14px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-  },
-  inputFull: {
-    padding: '12px',
-    fontSize: '14px',
-    border: '1px solid #ccc',
-    borderRadius: '8px',
+    padding: '0.75rem',
+    borderRadius: '0.5rem',
+    border: '1px solid #94A3B8',
+    backgroundColor: '#0F172A',
+    color: 'white',
+    fontSize: '1rem',
   },
   button: {
-    marginTop: '10px',
-    backgroundColor: '#000',
-    color: '#fff',
-    padding: '12px',
-    fontSize: '15px',
+    backgroundColor: '#38BDF8',
+    color: 'white',
+    padding: '0.75rem 1rem',
+    borderRadius: '0.5rem',
     border: 'none',
-    borderRadius: '8px',
     cursor: 'pointer',
+    fontWeight: 'bold',
+    marginTop: '1rem',
   },
 };
+

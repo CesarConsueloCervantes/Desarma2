@@ -18,6 +18,7 @@ export default function AdminDashboard() {
             <Link href="/admin/proovedoresAdmin">Proveedores</Link>
             <Link href="/admin/ventasAdmin">Ventas</Link>
             <Link href="/admin/enviosAdmin">Envios</Link>
+            <Link href="/admin/paqueteriaPage" >Paqueterías</Link>
           </aside>
 
         <main className="admin-main">

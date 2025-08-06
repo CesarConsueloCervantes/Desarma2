@@ -71,7 +71,6 @@ export default function UserPage() {
         T_Usuario_Apellido: formData.apellido,
         T_Usuario_Email: formData.email,
         T_Usuario_Telefono: formData.telefono,
-        T_Usuario_Password: 'Temporal123!',
         T_Usuario_Direccion_Calle: formData.calle,
         T_Usuario_Direccion_Fraccionamiento: formData.fraccionamiento,
         T_Usuario_Direccion_CP: formData.cp,
@@ -98,38 +97,40 @@ export default function UserPage() {
   return (
     <>
       <Header />
-      <div style={styles.container}>
-        <h1 style={styles.title}>Bienvenido, {formData.nombre}</h1>
-        {editMode ? (
-          <form onSubmit={handleEditSubmit} style={styles.form}>
-            <input name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleInputChange} style={styles.input} required />
-            <input name="apellido" placeholder="Apellido" value={formData.apellido} onChange={handleInputChange} style={styles.input} required />
-            <input name="email" placeholder="Correo electrónico" type="email" value={formData.email} onChange={handleInputChange} style={styles.input} required />
-            <input name="telefono" placeholder="Teléfono" value={formData.telefono} onChange={handleInputChange} style={styles.input} required />
-            <input name="calle" placeholder="Calle" value={formData.calle} onChange={handleInputChange} style={styles.input} />
-            <input name="fraccionamiento" placeholder="Fraccionamiento" value={formData.fraccionamiento} onChange={handleInputChange} style={styles.input} />
-            <input name="cp" placeholder="Código Postal" value={formData.cp} onChange={handleInputChange} style={styles.input} />
-            <input name="ciudad" placeholder="Ciudad" value={formData.ciudad} onChange={handleInputChange} style={styles.input} />
+      <div style={styles.page}>
+        <div style={styles.container}>
+          <h1 style={styles.title}>Bienvenido, {formData.nombre}</h1>
+          {editMode ? (
+            <form onSubmit={handleEditSubmit} style={styles.form}>
+              <input name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleInputChange} style={styles.input} required />
+              <input name="apellido" placeholder="Apellido" value={formData.apellido} onChange={handleInputChange} style={styles.input} required />
+              <input name="email" placeholder="Correo electrónico" type="email" value={formData.email} onChange={handleInputChange} style={styles.input} required />
+              <input name="telefono" placeholder="Teléfono" value={formData.telefono} onChange={handleInputChange} style={styles.input} required />
+              <input name="calle" placeholder="Calle" value={formData.calle} onChange={handleInputChange} style={styles.input} />
+              <input name="fraccionamiento" placeholder="Fraccionamiento" value={formData.fraccionamiento} onChange={handleInputChange} style={styles.input} />
+              <input name="cp" placeholder="Código Postal" value={formData.cp} onChange={handleInputChange} style={styles.input} />
+              <input name="ciudad" placeholder="Ciudad" value={formData.ciudad} onChange={handleInputChange} style={styles.input} />
 
-            <div style={styles.buttonGroup}>
-              <button type="submit" style={styles.primaryButton}>Guardar</button>
-              <button type="button" onClick={() => setEditMode(false)} style={styles.secondaryButton}>Cancelar</button>
+              <div style={styles.buttonGroup}>
+                <button type="submit" style={styles.primaryButton}>Guardar</button>
+                <button type="button" onClick={() => setEditMode(false)} style={styles.secondaryButton}>Cancelar</button>
+              </div>
+            </form>
+          ) : (
+            <div style={{ marginBottom: '20px' }}>
+              <p style={styles.text}><strong>Email:</strong> {formData.email}</p>
+              <p style={styles.text}><strong>Teléfono:</strong> {formData.telefono}</p>
+              <p style={styles.text}><strong>Dirección:</strong> {formData.calle}, {formData.fraccionamiento}, {formData.cp}, {formData.ciudad}</p>
+              <p style={styles.text}><strong>Rol:</strong> {user.rol}</p>
             </div>
-          </form>
-        ) : (
-          <div style={{ marginBottom: '20px' }}>
-            <p style={styles.text}><strong>Email:</strong> {formData.email}</p>
-            <p style={styles.text}><strong>Teléfono:</strong> {formData.telefono}</p>
-            <p style={styles.text}><strong>Dirección:</strong> {formData.calle}, {formData.fraccionamiento}, {formData.cp}, {formData.ciudad}</p>
-            <p style={styles.text}><strong>Rol:</strong> {user.rol}</p>
-          </div>
-        )}
-
-        <div style={styles.buttonGroup}>
-          <button style={styles.primaryButton} onClick={handleLogout}>Cerrar sesión</button>
-          {!editMode && (
-            <button style={styles.secondaryButton} onClick={() => setEditMode(true)}>Editar datos</button>
           )}
+
+          <div style={styles.buttonGroup}>
+            <button style={styles.primaryButton} onClick={handleLogout}>Cerrar sesión</button>
+            {!editMode && (
+              <button style={styles.secondaryButton} onClick={() => setEditMode(true)}>Editar datos</button>
+            )}
+          </div>
         </div>
       </div>
     </>
@@ -137,19 +138,24 @@ export default function UserPage() {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  page: {
+    backgroundColor: '#0F172A',
+    minHeight: '100vh',
+    padding: '0 16px',
+    fontFamily: 'sans-serif',
+    color: '#F8FAFC',
+  },
   container: {
     maxWidth: '500px',
     margin: '80px auto',
     padding: '30px',
-    backgroundColor: '#fff',
+    backgroundColor: '#1E293B',
     borderRadius: '16px',
-    boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-    fontFamily: 'Arial, sans-serif',
-    color: '#171717',
+    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
   },
   title: {
     fontSize: '26px',
-    color: '#007aff',
+    color: '#38BDF8',
     marginBottom: '24px',
     textAlign: 'center',
   },
@@ -163,16 +169,17 @@ const styles: { [key: string]: React.CSSProperties } = {
     width: '100%',
     padding: '12px',
     fontSize: '15px',
-    border: '1px solid #ccc',
+    border: '1px solid #475569',
     borderRadius: '8px',
-    boxSizing: 'border-box',
-    backgroundColor: '#fff',
+    backgroundColor: '#0F172A',
+    color: '#F8FAFC',
+    outline: 'none',
   },
   text: {
-    fontSize: '16px',
+    fontSize: '15px',
     margin: '12px 0',
     lineHeight: '1.5',
-    color: '#333',
+    color: '#CBD5E1',
   },
   buttonGroup: {
     display: 'flex',
@@ -182,24 +189,25 @@ const styles: { [key: string]: React.CSSProperties } = {
     marginTop: '20px',
   },
   primaryButton: {
-    backgroundColor: '#007aff',
-    color: '#fff',
+    backgroundColor: '#38BDF8',
+    color: '#0F172A',
     padding: '12px 20px',
     fontSize: '15px',
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
+    fontWeight: 'bold',
   },
   secondaryButton: {
     backgroundColor: 'transparent',
-    color: '#007aff',
-    border: '1px solid #007aff',
+    color: '#38BDF8',
+    border: '1px solid #38BDF8',
     padding: '12px 20px',
     fontSize: '15px',
     borderRadius: '8px',
     cursor: 'pointer',
-    transition: 'background-color 0.2s ease',
-  }
+    fontWeight: 'bold',
+  },
 };
+
 

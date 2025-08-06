@@ -32,10 +32,18 @@ export default function RootLayout({
     <html lang="es">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh',
+          backgroundColor: '#0F172A', // fondo congruente con tu diseño
+        }}
       >
-        {/* Wrapping the whole app with Redux Provider */}
-        <Providers>{children}</Providers>
+        <Providers>
+          <div style={{ flex: 1 }}>{children}</div>
+        </Providers>
       </body>
     </html>
   );
 }
+

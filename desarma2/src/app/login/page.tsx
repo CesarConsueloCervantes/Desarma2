@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store';
 import { loginUser } from '@/store/authSlice';
 import HeaderGuest from '@/components/HeaderGuest';
+import { useAuth } from '@/store/provider'; // ✅ Nuevo import
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,36 +15,38 @@ export default function LoginPage() {
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth.user);
   const error = useSelector((state: RootState) => state.auth.error);
+  const { setUsuario } = useAuth(); // ✅ Nuevo hook
 
   useEffect(() => {
     if (user) {
-      console.log(user)
+      setUsuario(user); // ✅ Sincroniza el contexto global
+
+      console.log(user);
       if (user.rol === 'administrador') {
         router.push('/admin/panel');
       } else {
         router.push('/');
       }
     }
-  }, [user, router]);
+  }, [user, router, setUsuario]);
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  console.log('🚀 Enviando login:', { email, password });
-   try {
+    e.preventDefault();
+    console.log('🚀 Enviando login:', { email, password });
+    try {
       await dispatch(loginUser({ email, password })).unwrap();
     } catch (err) {
       console.error('❌ Error de login:', err);
-     alert('Credenciales inválidas');
+      alert('Credenciales inválidas');
     }
   };
-
 
   const handleRegisterRedirect = () => {
     router.push('/register');
   };
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div style={styles.page}>
       <HeaderGuest />
       <main style={styles.container}>
         <h1 style={styles.title}>Iniciar Sesión</h1>
@@ -51,7 +54,7 @@ export default function LoginPage() {
           <input
             type="email"
             placeholder="Correo electrónico"
-            style={styles.inputFull}
+            style={styles.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -59,7 +62,7 @@ export default function LoginPage() {
           <input
             type="password"
             placeholder="Contraseña"
-            style={styles.inputFull}
+            style={styles.input}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -67,7 +70,7 @@ export default function LoginPage() {
           <button type="submit" style={styles.button}>
             Entrar
           </button>
-          {error && <p style={{ color: 'red', fontSize: '14px' }}>{error}</p>}
+          {error && <p style={styles.error}>{error}</p>}
         </form>
 
         <div style={styles.registerContainer}>
@@ -82,56 +85,74 @@ export default function LoginPage() {
 }
 
 const styles: { [key: string]: React.CSSProperties } = {
+  page: {
+    backgroundColor: '#0F172A',
+    minHeight: '100vh',
+    padding: '0 16px',
+  },
   container: {
     maxWidth: '400px',
     margin: '100px auto',
     padding: '30px',
-    backgroundColor: '#fff',
+    backgroundColor: '#1E293B',
     borderRadius: '16px',
-    boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+    boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
     textAlign: 'left',
     fontFamily: 'sans-serif',
+    color: '#F8FAFC',
   },
   title: {
     fontSize: '24px',
     marginBottom: '20px',
-    textAlign: 'center'
+    textAlign: 'center',
+    color: '#38BDF8',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '14px'
+    gap: '14px',
   },
-  inputFull: {
+  input: {
     padding: '12px',
     fontSize: '14px',
-    border: '1px solid #ccc',
-    borderRadius: '8px'
+    border: '1px solid #475569',
+    borderRadius: '8px',
+    backgroundColor: '#0F172A',
+    color: '#F8FAFC',
+    outline: 'none',
   },
   button: {
-    backgroundColor: '#000',
-    color: '#fff',
+    backgroundColor: '#38BDF8',
+    color: '#0F172A',
     padding: '12px',
     fontSize: '15px',
     border: 'none',
     borderRadius: '8px',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    fontWeight: 'bold',
+  },
+  error: {
+    color: '#F87171',
+    fontSize: '14px',
+    textAlign: 'center',
   },
   registerContainer: {
     marginTop: '24px',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   registerText: {
     fontSize: '14px',
-    marginBottom: '10px'
+    marginBottom: '10px',
+    color: '#CBD5E1',
   },
   registerButton: {
-    backgroundColor: '#444',
-    color: '#fff',
+    backgroundColor: '#334155',
+    color: '#F8FAFC',
     padding: '10px 20px',
     fontSize: '14px',
     border: 'none',
     borderRadius: '8px',
-    cursor: 'pointer'
-  }
+    cursor: 'pointer',
+  },
 };
+
