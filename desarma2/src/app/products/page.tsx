@@ -58,12 +58,10 @@ export default function ProductsPage() {
           {productos.length > 0 ? (
             productos.map((p) => (
               <div key={p._id} style={styles.card}>
-                <Image
-                  src={p.T_Producto_Imagen || '/pieza1.png'}
-                  alt={p.T_Producto_Nombre}
-                  width={160}
-                  height={160}
-                  style={styles.image}
+                <img
+                  src={p.T_Producto_Imagen.toString()}
+                  alt="Vista previa del producto"
+                  style={{ maxWidth: '100%', maxHeight: '250px', borderRadius: '8px' }}
                 />
                 <h3 style={styles.productName}>{p.T_Producto_Nombre}</h3>
                 <p style={styles.price}>${p.T_Producto_Precio} MXN</p>

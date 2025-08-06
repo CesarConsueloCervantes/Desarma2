@@ -13,6 +13,9 @@ import {
   deleteRegistroVenta,
 } from '@/services/registroGeneralVentaService';
 import { getProductos } from '@/services/productoService';
+import {
+  get
+}from '@/services/estadoProvinciaService';
 
 interface Venta {
   _id?: string;
