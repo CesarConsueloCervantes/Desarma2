@@ -75,13 +75,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#F8FAFC',
     fontFamily: 'sans-serif',
     minHeight: '100vh',
+    padding: '0 clamp(16px, 4vw, 40px)', // responsive lateral padding
   },
   main: {
     flexGrow: 1,
   },
   banner: {
     width: '100%',
-    height: '500px',
+    height: 'clamp(240px, 40vw, 500px)', // responsive height
     overflow: 'hidden',
   },
   bannerImage: {
@@ -91,19 +92,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderBottom: '4px solid #1E293B',
   },
   carouselSection: {
-    padding: '40px 20px',
+    padding: 'clamp(20px, 5vw, 40px) 0',
     textAlign: 'center',
     position: 'relative',
   },
   sectionTitle: {
-    fontSize: '24px',
+    fontSize: 'clamp(20px, 4vw, 32px)', // responsive font size
     marginBottom: '20px',
     color: '#38BDF8',
   },
   carouselContainer: {
     position: 'relative',
     width: '100%',
-    height: '400px',
+    height: 'clamp(200px, 40vw, 400px)', // responsive height
     overflow: 'hidden',
     borderRadius: '12px',
   },
@@ -122,5 +123,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: '12px',
   },
 };
+
 
 

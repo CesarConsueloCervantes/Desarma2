@@ -6,38 +6,46 @@ import { FaHome } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
 
-const styles = {
+const styles: { [key: string]: React.CSSProperties } = {
   header: {
     backgroundColor: '#1E293B',
     color: '#F1F5F9',
     display: 'flex',
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '12px 24px',
+    padding: 'clamp(12px, 4vw, 24px)',
     boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
     fontFamily: 'sans-serif',
+    gap: '12px',
   },
   left: {
     display: 'flex',
     alignItems: 'center',
+    flexShrink: 0,
   },
   nav: {
     display: 'flex',
-    gap: '20px',
-    fontSize: '0.95rem',
+    flexWrap: 'wrap',
+    gap: 'clamp(12px, 3vw, 20px)',
+    fontSize: 'clamp(0.85rem, 2vw, 1rem)',
     fontWeight: 500,
+    justifyContent: 'center',
+    flexGrow: 1,
   },
   link: {
     color: '#F1F5F9',
     textDecoration: 'none',
     transition: 'color 0.3s ease',
+    whiteSpace: 'nowrap',
   },
   icons: {
     display: 'flex',
-    gap: '16px',
-    fontSize: '1.4rem',
+    gap: 'clamp(12px, 2vw, 16px)',
+    fontSize: 'clamp(1.2rem, 3vw, 1.4rem)',
     color: '#38BDF8',
     alignItems: 'center',
+    flexShrink: 0,
   },
 };
 

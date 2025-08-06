@@ -7,6 +7,8 @@ import { logout } from '@/store/authSlice';
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import { updateUsuario } from '@/services/usuarioService';
+import Footer from '@/components/Footer';
+
 
 export default function UserPage() {
   const dispatch = useDispatch<AppDispatch>();
@@ -132,43 +134,47 @@ export default function UserPage() {
             )}
           </div>
         </div>
+
+        <Footer />
       </div>
     </>
   );
 }
-
 const styles: { [key: string]: React.CSSProperties } = {
   page: {
     backgroundColor: '#0F172A',
     minHeight: '100vh',
-    padding: '0 16px',
+    padding: 'clamp(16px, 4vw, 32px)',
     fontFamily: 'sans-serif',
     color: '#F8FAFC',
+    display: 'flex',
+    flexDirection: 'column',
   },
   container: {
+    width: '100%',
     maxWidth: '500px',
-    margin: '80px auto',
-    padding: '30px',
+    margin: 'clamp(60px, 10vh, 100px) auto',
+    padding: 'clamp(24px, 6vw, 40px)',
     backgroundColor: '#1E293B',
     borderRadius: '16px',
     boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
   },
   title: {
-    fontSize: '26px',
+    fontSize: 'clamp(22px, 5vw, 28px)',
     color: '#38BDF8',
-    marginBottom: '24px',
+    marginBottom: 'clamp(20px, 5vw, 24px)',
     textAlign: 'center',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '14px',
-    marginBottom: '20px',
+    gap: 'clamp(12px, 3vw, 16px)',
+    marginBottom: 'clamp(16px, 4vw, 20px)',
   },
   input: {
     width: '100%',
-    padding: '12px',
-    fontSize: '15px',
+    padding: 'clamp(10px, 3vw, 14px)',
+    fontSize: 'clamp(14px, 2.5vw, 16px)',
     border: '1px solid #475569',
     borderRadius: '8px',
     backgroundColor: '#0F172A',
@@ -176,23 +182,23 @@ const styles: { [key: string]: React.CSSProperties } = {
     outline: 'none',
   },
   text: {
-    fontSize: '15px',
+    fontSize: 'clamp(14px, 2.5vw, 15px)',
     margin: '12px 0',
     lineHeight: '1.5',
     color: '#CBD5E1',
   },
   buttonGroup: {
     display: 'flex',
-    gap: '12px',
+    gap: 'clamp(10px, 3vw, 16px)',
     flexWrap: 'wrap',
     justifyContent: 'center',
-    marginTop: '20px',
+    marginTop: 'clamp(16px, 4vw, 20px)',
   },
   primaryButton: {
     backgroundColor: '#38BDF8',
     color: '#0F172A',
-    padding: '12px 20px',
-    fontSize: '15px',
+    padding: 'clamp(10px, 3vw, 14px) clamp(16px, 5vw, 20px)',
+    fontSize: 'clamp(14px, 2.5vw, 15px)',
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',
@@ -202,12 +208,13 @@ const styles: { [key: string]: React.CSSProperties } = {
     backgroundColor: 'transparent',
     color: '#38BDF8',
     border: '1px solid #38BDF8',
-    padding: '12px 20px',
-    fontSize: '15px',
+    padding: 'clamp(10px, 3vw, 14px) clamp(16px, 5vw, 20px)',
+    fontSize: 'clamp(14px, 2.5vw, 15px)',
     borderRadius: '8px',
     cursor: 'pointer',
     fontWeight: 'bold',
   },
 };
+
 
 

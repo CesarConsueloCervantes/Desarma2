@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { register } from '@/services/authService';
 import { useRouter } from 'next/navigation';
 import HeaderGuest from '@/components/HeaderGuest';
+import Footer from '@/components/Footer';
 
 export default function RegisterPage() {
   const [firstName, setFirstName] = useState('');
@@ -67,62 +68,68 @@ export default function RegisterPage() {
           </form>
         </div>
       </div>
+
+      <Footer/>
     </div>
   );
 }
-
 const styles: { [key: string]: React.CSSProperties } = {
   main: {
     minHeight: '100vh',
     background: 'linear-gradient(to bottom right, #0F172A, #1E293B)',
     color: 'white',
-    padding: '2rem',
+    padding: 'clamp(16px, 4vw, 32px)',
     fontFamily: 'Arial, sans-serif',
+    display: 'flex',
+    flexDirection: 'column',
   },
   container: {
+    width: '100%',
     maxWidth: '600px',
-    margin: '0 auto',
+    margin: 'clamp(40px, 10vh, 80px) auto',
   },
   title: {
-    fontSize: '2.5rem',
+    fontSize: 'clamp(24px, 6vw, 40px)',
     fontWeight: 'bold',
     color: '#38BDF8',
     textAlign: 'center',
-    marginBottom: '2rem',
+    marginBottom: 'clamp(24px, 6vw, 40px)',
   },
   box: {
     backgroundColor: '#1E293B',
-    padding: '2rem',
+    padding: 'clamp(24px, 6vw, 40px)',
     borderRadius: '1rem',
     boxShadow: '0 4px 12px rgba(0,0,0,0.4)',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '1rem',
+    gap: 'clamp(12px, 3vw, 20px)',
   },
   row: {
     display: 'flex',
-    gap: '1rem',
+    flexDirection: 'column',
+    gap: 'clamp(12px, 3vw, 20px)',
   },
   input: {
-    flex: 1,
-    padding: '0.75rem',
+    width: '100%',
+    padding: 'clamp(10px, 3vw, 14px)',
     borderRadius: '0.5rem',
     border: '1px solid #94A3B8',
     backgroundColor: '#0F172A',
     color: 'white',
-    fontSize: '1rem',
+    fontSize: 'clamp(14px, 2.5vw, 16px)',
   },
   button: {
     backgroundColor: '#38BDF8',
     color: 'white',
-    padding: '0.75rem 1rem',
+    padding: 'clamp(10px, 3vw, 14px) clamp(16px, 5vw, 24px)',
     borderRadius: '0.5rem',
     border: 'none',
     cursor: 'pointer',
     fontWeight: 'bold',
-    marginTop: '1rem',
+    marginTop: 'clamp(12px, 3vw, 20px)',
+    fontSize: 'clamp(14px, 2.5vw, 16px)',
   },
 };
 

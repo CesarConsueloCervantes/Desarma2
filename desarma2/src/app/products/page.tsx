@@ -87,44 +87,49 @@ export default function ProductsPage() {
     </div>
   );
 }
-
 const styles: { [key: string]: CSSProperties } = {
   container: {
+    width: '100%',
     maxWidth: '1200px',
-    margin: '60px auto',
-    padding: '20px',
+    margin: 'clamp(40px, 8vh, 60px) auto',
+    padding: 'clamp(16px, 4vw, 32px)',
     fontFamily: 'Arial, sans-serif',
   },
   title: {
-    fontSize: '24px',
+    fontSize: 'clamp(20px, 5vw, 28px)',
     textAlign: 'center',
     color: '#475B85',
-    marginBottom: '30px',
+    marginBottom: 'clamp(20px, 5vw, 30px)',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '20px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: 'clamp(16px, 4vw, 24px)',
   },
   card: {
     border: '1px solid #ddd',
     borderRadius: '8px',
-    padding: '16px',
+    padding: 'clamp(16px, 4vw, 24px)',
     textAlign: 'center',
     backgroundColor: '#fff',
     boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   image: {
-    borderRadius: '6px',
+    maxWidth: '100%',
+    maxHeight: '250px',
+    borderRadius: '8px',
     objectFit: 'contain',
   },
   productName: {
-    fontSize: '16px',
+    fontSize: 'clamp(14px, 2.5vw, 16px)',
     marginTop: '12px',
     fontWeight: 'bold',
   },
   price: {
-    fontSize: '14px',
+    fontSize: 'clamp(13px, 2.5vw, 14px)',
     margin: '8px 0',
     color: '#333',
   },
@@ -132,9 +137,11 @@ const styles: { [key: string]: CSSProperties } = {
     backgroundColor: '#475B85',
     color: '#fff',
     border: 'none',
-    padding: '10px 14px',
-    fontSize: '14px',
+    padding: 'clamp(10px, 3vw, 12px) clamp(14px, 4vw, 18px)',
+    fontSize: 'clamp(13px, 2.5vw, 14px)',
     borderRadius: '4px',
     cursor: 'pointer',
+    marginTop: 'auto',
   },
 };
+

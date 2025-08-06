@@ -7,6 +7,8 @@ import { AppDispatch, RootState } from '@/store';
 import { loginUser } from '@/store/authSlice';
 import HeaderGuest from '@/components/HeaderGuest';
 import { useAuth } from '@/store/provider'; // ✅ Nuevo import
+import Footer from '@/components/Footer';
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -80,20 +82,24 @@ export default function LoginPage() {
           </button>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
-
 const styles: { [key: string]: React.CSSProperties } = {
   page: {
     backgroundColor: '#0F172A',
     minHeight: '100vh',
-    padding: '0 16px',
+    padding: 'clamp(16px, 4vw, 32px)',
+    display: 'flex',
+    flexDirection: 'column',
   },
   container: {
+    width: '100%',
     maxWidth: '400px',
-    margin: '100px auto',
-    padding: '30px',
+    margin: 'clamp(60px, 10vh, 100px) auto',
+    padding: 'clamp(24px, 6vw, 40px)',
     backgroundColor: '#1E293B',
     borderRadius: '16px',
     boxShadow: '0 4px 16px rgba(0,0,0,0.3)',
@@ -102,19 +108,19 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#F8FAFC',
   },
   title: {
-    fontSize: '24px',
-    marginBottom: '20px',
+    fontSize: 'clamp(20px, 5vw, 28px)',
+    marginBottom: 'clamp(16px, 4vw, 24px)',
     textAlign: 'center',
     color: '#38BDF8',
   },
   form: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '14px',
+    gap: 'clamp(12px, 3vw, 16px)',
   },
   input: {
-    padding: '12px',
-    fontSize: '14px',
+    padding: 'clamp(10px, 3vw, 14px)',
+    fontSize: 'clamp(14px, 2.5vw, 16px)',
     border: '1px solid #475569',
     borderRadius: '8px',
     backgroundColor: '#0F172A',
@@ -124,8 +130,8 @@ const styles: { [key: string]: React.CSSProperties } = {
   button: {
     backgroundColor: '#38BDF8',
     color: '#0F172A',
-    padding: '12px',
-    fontSize: '15px',
+    padding: 'clamp(10px, 3vw, 14px)',
+    fontSize: 'clamp(14px, 2.5vw, 16px)',
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',
@@ -133,23 +139,23 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   error: {
     color: '#F87171',
-    fontSize: '14px',
+    fontSize: 'clamp(13px, 2.5vw, 14px)',
     textAlign: 'center',
   },
   registerContainer: {
-    marginTop: '24px',
+    marginTop: 'clamp(20px, 5vw, 24px)',
     textAlign: 'center',
   },
   registerText: {
-    fontSize: '14px',
+    fontSize: 'clamp(13px, 2.5vw, 14px)',
     marginBottom: '10px',
     color: '#CBD5E1',
   },
   registerButton: {
     backgroundColor: '#334155',
     color: '#F8FAFC',
-    padding: '10px 20px',
-    fontSize: '14px',
+    padding: 'clamp(10px, 3vw, 12px) clamp(16px, 5vw, 20px)',
+    fontSize: 'clamp(13px, 2.5vw, 14px)',
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',
