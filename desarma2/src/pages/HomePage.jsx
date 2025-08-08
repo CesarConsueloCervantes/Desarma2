@@ -1,5 +1,5 @@
 import React from 'react';
-import './HomePage.css';
+import '../styles/HomePage.css';
 import ProductCard from '../components/ProductCard';
 
 function HomePage() {

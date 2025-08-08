@@ -9,7 +9,6 @@ import Header from '@/components/Header';
 import { updateUsuario } from '@/services/usuarioService';
 import Footer from '@/components/Footer';
 
-
 export default function UserPage() {
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -35,14 +34,14 @@ export default function UserPage() {
   useEffect(() => {
     if (isClient && user) {
       setFormData({
-        nombre: user.nombre ?? '',
-        apellido: user.apellido ?? '',
-        email: user.email ?? '',
-        telefono: user.telefono ?? '',
-        calle: user.direccion?.calle ?? '',
-        fraccionamiento: user.direccion?.fraccionamiento ?? '',
-        cp: user.direccion?.cp ?? '',
-        ciudad: user.direccion?.ciudad ?? ''
+        nombre: user?.nombre ?? '',
+        apellido: user?.apellido ?? '',
+        email: user?.email ?? '',
+        telefono: user?.telefono ?? '',
+        calle: user?.direccion?.calle ?? '',
+        fraccionamiento: user?.direccion?.fraccionamiento ?? '',
+        cp: user?.direccion?.cp ?? '',
+        ciudad: user?.direccion?.ciudad ?? ''
       });
     } else if (isClient && !user) {
       router.push('/login');
@@ -62,7 +61,7 @@ export default function UserPage() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const userId = user?.id;
+      const userId = user?._id; // Use _id instead of id
       if (!userId) {
         alert('ID del usuario no disponible');
         return;
@@ -77,8 +76,8 @@ export default function UserPage() {
         T_Usuario_Direccion_Fraccionamiento: formData.fraccionamiento,
         T_Usuario_Direccion_CP: formData.cp,
         T_Usuario_Direccion_Ciudad: formData.ciudad,
-        T_Usuario_Rol: user.rol ?? 'cliente',
-        T_Usuario_Estado: true
+        T_Usuario_Rol: user?.rol ?? 'cliente',
+        T_Usuario_Estado: true,
       };
 
       const payload = Object.fromEntries(
@@ -88,9 +87,9 @@ export default function UserPage() {
       await updateUsuario(userId, payload);
       alert('✅ Datos actualizados correctamente');
       setEditMode(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error al actualizar usuario:', error);
-      alert('No se pudo actualizar el usuario');
+      alert(error.response?.data?.message || 'No se pudo actualizar el usuario');
     }
   };
 
@@ -123,7 +122,7 @@ export default function UserPage() {
               <p style={styles.text}><strong>Email:</strong> {formData.email}</p>
               <p style={styles.text}><strong>Teléfono:</strong> {formData.telefono}</p>
               <p style={styles.text}><strong>Dirección:</strong> {formData.calle}, {formData.fraccionamiento}, {formData.cp}, {formData.ciudad}</p>
-              <p style={styles.text}><strong>Rol:</strong> {user.rol}</p>
+              <p style={styles.text}><strong>Rol:</strong> {user?.rol}</p>
             </div>
           )}
 
@@ -140,6 +139,7 @@ export default function UserPage() {
     </>
   );
 }
+
 const styles: { [key: string]: React.CSSProperties } = {
   page: {
     backgroundColor: '#0F172A',
@@ -178,14 +178,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: '1px solid #475569',
     borderRadius: '8px',
     backgroundColor: '#0F172A',
-    color: '#F8FAFC',
+    color: '#E2E8F0',
     outline: 'none',
   },
   text: {
     fontSize: 'clamp(14px, 2.5vw, 15px)',
     margin: '12px 0',
     lineHeight: '1.5',
-    color: '#CBD5E1',
+    color: '#E2E8F0',
   },
   buttonGroup: {
     display: 'flex',

@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./DE2-API
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3005"
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/test
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./desarma2
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3005/api
+
+  mongo:
+    image: mongo:5.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

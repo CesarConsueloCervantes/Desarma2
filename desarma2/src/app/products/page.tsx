@@ -28,8 +28,9 @@ export default function ProductsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productosReal = await getProductos();
-        const activos = productosReal.filter((p) => p.T_Producto_Estado);
+        // Explicitly type productosReal as Producto[]
+        const productosReal: Producto[] = await getProductos();
+        const activos = productosReal.filter((p: Producto) => p.T_Producto_Estado); // Explicitly type p
         setProductos(activos);
       } catch (error) {
         console.error('Error al cargar productos reales:', error);
@@ -39,17 +40,16 @@ export default function ProductsPage() {
     fetchData();
   }, []);
 
-  // ✅ Nuevo handler funcional
   const handleAgregarAlCarrito = (producto: Producto) => {
-  addToCart({
-    id: producto._id,
-    name: producto.T_Producto_Nombre,
-    price: producto.T_Producto_Precio,
-    quantity: 1,
-    image: producto.T_Producto_Imagen, // ✅ Esto es lo que faltaba
-  });
-  router.push('/car');
-};
+    addToCart({
+      id: producto._id,
+      name: producto.T_Producto_Nombre,
+      price: producto.T_Producto_Precio,
+      quantity: 1,
+      image: producto.T_Producto_Imagen,
+    });
+    router.push('/car');
+  };
 
   return (
     <div>
@@ -69,7 +69,7 @@ export default function ProductsPage() {
                 <p style={styles.price}>${p.T_Producto_Precio} MXN</p>
                 <button
                   style={styles.button}
-                  onClick={() => handleAgregarAlCarrito(p)} // 👈 Pasamos el producto
+                  onClick={() => handleAgregarAlCarrito(p)}
                 >
                   Agregar al carrito
                 </button>
@@ -87,6 +87,7 @@ export default function ProductsPage() {
     </div>
   );
 }
+
 const styles: { [key: string]: CSSProperties } = {
   container: {
     width: '100%',
