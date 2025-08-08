@@ -30,8 +30,9 @@ export default function ProductsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productosReal = await getProductos();
-        const activos = productosReal.filter((p) => p.T_Producto_Estado);
+        // Explicitly type productosReal as Producto[]
+        const productosReal: Producto[] = await getProductos();
+        const activos = productosReal.filter((p: Producto) => p.T_Producto_Estado); // Explicitly type p
         setProductos(activos);
       } catch (error) {
         console.error('Error al cargar productos reales:', error);
