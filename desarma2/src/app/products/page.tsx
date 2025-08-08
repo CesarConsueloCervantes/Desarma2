@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getProductos } from '@/services/productoService';
-import { useCart } from '@/store/provider'; // 👈 Nuevo import
+import { useCart } from '@/store/provider';
 import type { CSSProperties } from 'react';
 import Footer from '@/components/Footer';
 
@@ -22,8 +22,10 @@ interface Producto {
 
 export default function ProductsPage() {
   const router = useRouter();
-  const { addToCart } = useCart(); // 👈 Hook del carrito
+  const { addToCart } = useCart();
   const [productos, setProductos] = useState<Producto[]>([]);
+  const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
+  const [clickedButtonId, setClickedButtonId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,6 +43,8 @@ export default function ProductsPage() {
   }, []);
 
   const handleAgregarAlCarrito = (producto: Producto) => {
+    setClickedButtonId(producto._id);
+    setTimeout(() => setClickedButtonId(null), 150);
     addToCart({
       id: producto._id,
       name: producto.T_Producto_Nombre,
@@ -48,7 +52,6 @@ export default function ProductsPage() {
       quantity: 1,
       image: producto.T_Producto_Imagen,
     });
-    router.push('/car');
   };
 
   return (
@@ -59,7 +62,15 @@ export default function ProductsPage() {
         <div style={styles.grid}>
           {productos.length > 0 ? (
             productos.map((p) => (
-              <div key={p._id} style={styles.card}>
+              <div
+                key={p._id}
+                style={{
+                  ...styles.card,
+                  ...(hoveredCardId === p._id ? styles.cardZoom : {}),
+                }}
+                onMouseEnter={() => setHoveredCardId(p._id)}
+                onMouseLeave={() => setHoveredCardId(null)}
+              >
                 <img
                   src={p.T_Producto_Imagen.toString()}
                   alt="Vista previa del producto"
@@ -68,7 +79,10 @@ export default function ProductsPage() {
                 <h3 style={styles.productName}>{p.T_Producto_Nombre}</h3>
                 <p style={styles.price}>${p.T_Producto_Precio} MXN</p>
                 <button
-                  style={styles.button}
+                  style={{
+                    ...styles.button,
+                    ...(clickedButtonId === p._id ? styles.buttonClicked : {}),
+                  }}
                   onClick={() => handleAgregarAlCarrito(p)}
                 >
                   Agregar al carrito
@@ -82,7 +96,6 @@ export default function ProductsPage() {
           )}
         </div>
       </main>
-
       <Footer />
     </div>
   );
@@ -108,20 +121,25 @@ const styles: { [key: string]: CSSProperties } = {
     gap: 'clamp(16px, 4vw, 24px)',
   },
   card: {
-    border: '1px solid #ddd',
-    borderRadius: '8px',
+    borderRadius: '2rem',
     padding: 'clamp(16px, 4vw, 24px)',
     textAlign: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#475B85',
     boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
+    color: '#fff',
+    transition: 'transform 0.3s ease',
+    cursor: 'pointer',
+  },
+  cardZoom: {
+    transform: 'scale(1.03)',
   },
   image: {
     maxWidth: '100%',
     maxHeight: '250px',
-    borderRadius: '8px',
+    borderRadius: '1rem',
     objectFit: 'contain',
   },
   productName: {
@@ -132,17 +150,22 @@ const styles: { [key: string]: CSSProperties } = {
   price: {
     fontSize: 'clamp(13px, 2.5vw, 14px)',
     margin: '8px 0',
-    color: '#333',
+    color: '#E2E8F0',
   },
   button: {
-    backgroundColor: '#475B85',
+    backgroundColor: '#0F172A',
     color: '#fff',
     border: 'none',
     padding: 'clamp(10px, 3vw, 12px) clamp(14px, 4vw, 18px)',
     fontSize: 'clamp(13px, 2.5vw, 14px)',
-    borderRadius: '4px',
+    borderRadius: '1rem',
     cursor: 'pointer',
     marginTop: 'auto',
+    transition: 'transform 0.2s ease',
+  },
+  buttonClicked: {
+    transform: 'scale(0.95)',
   },
 };
+
 

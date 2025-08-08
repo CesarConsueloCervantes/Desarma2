@@ -22,9 +22,6 @@ body {
 }
 
 
-
-
-
 /* ICONOS */
 .icons {
   display: flex;
@@ -185,20 +182,9 @@ h2 {
 .btn-primary:hover {
   background-color: #222;
 }
-.contact-page {
-  padding: 60px 30px; /* Más aire como en otras secciones */
-  font-family: var(--font-sans); /* Usa la fuente global */
-  background-color: var(--background); /* Fondo coherente con el tema */
-  color: var(--foreground); /* Texto coherente con el tema */
-}
 
-.contact-info {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  justify-content: center; /* Centrado como en .product-grid */
-  margin-bottom: 48px;
-}
+
+
 
 .info-box {
   background-color: #f8f8f8;
@@ -217,12 +203,7 @@ h2 {
   display: block;
 }
 
-.contact-body {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: space-between;
-}
+
 
 .map {
   flex: 1;

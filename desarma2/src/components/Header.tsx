@@ -5,6 +5,7 @@ import { HiOutlineUser, HiOutlineShoppingCart } from 'react-icons/hi';
 import { FaHome } from 'react-icons/fa';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useCart } from '@/store/provider'; // ✅ Importar el hook
 
 const styles: { [key: string]: React.CSSProperties } = {
   header: {
@@ -46,10 +47,26 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#38BDF8',
     alignItems: 'center',
     flexShrink: 0,
+    position: 'relative',
+  },
+  badge: {
+    position: 'absolute',
+    top: '-6px',
+    right: '-6px',
+    backgroundColor: '#EF4444',
+    color: '#fff',
+    borderRadius: '50%',
+    padding: '2px 6px',
+    fontSize: '12px',
+    fontWeight: 'bold',
+    lineHeight: 1,
   },
 };
 
 const Header = () => {
+  const { cartItems } = useCart();
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
   return (
     <header style={styles.header}>
       <div style={styles.left}>
@@ -71,11 +88,17 @@ const Header = () => {
       <div style={styles.icons}>
         <Link href="/"><FaHome /></Link>
         <Link href="/user"><HiOutlineUser /></Link>
-        <Link href="/car"><HiOutlineShoppingCart /></Link>
+        <div style={{ position: 'relative' }}>
+          <Link href="/car"><HiOutlineShoppingCart /></Link>
+          {totalItems > 0 && (
+            <span style={styles.badge}>{totalItems}</span>
+          )}
+        </div>
       </div>
     </header>
   );
 };
 
 export default Header;
+
 

@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sistema CoolTech",
+  title: "Desarma2",
   description: "Plataforma de ventas y administración de productos",
 };
 
