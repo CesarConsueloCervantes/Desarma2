@@ -1,17 +1,21 @@
 const mongoose = require('mongoose');
+const databaseErrorHandler = require('../middlewares/databaseErrorHandler');
 require('dotenv').config();
 
 console.log('MONGODB_URI:', process.env.MONGODB_URI);
 
 const connectDB = async () => {
-  const dbConnection = process.env.MONGODB_URI || 'mongodb://localhost:27017/test';
+  const dbConnection = process.env.MONGODB_URI;
   try {
-    await mongoose.connect(dbConnection);
+    await mongoose.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    });
     console.log('Conexión exitosa a la base de datos');
   } catch (error) {
-    console.error('Error al conectar a la base de datos:', error);
-    process.exit(1); // Exit the process if the database connection fails
+    app.use((req, res, next) => databaseErrorHandler(error, req, res, next));
+    process.exit(1);
   }
-};
+}
 
 module.exports = connectDB;

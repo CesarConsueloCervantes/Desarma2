@@ -110,35 +110,34 @@ exports.register = async (req, res, next) => {
   try {
     const {
       T_Usuario_Nombre,
-      T_Usuario_Apellido, 
+      T_Usuario_Apellido,
       T_Usuario_Email,
-      T_Usuario_Password
+      T_Usuario_Password,
     } = req.body;
 
-    // Verificar si el usuario ya existe
-    const usuarioExistente = await checkUserExists( T_Usuario_Email );
+    // Check if the user already exists
+    const usuarioExistente = await Usuario.findOne({ T_Usuario_Email });
     if (usuarioExistente) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         success: false,
-        message: 'El email ya está registrado' 
+        message: 'El email ya está registrado',
       });
     }
 
-    // Encriptar contraseña
-    const hashedPassword = await hashPassword(T_Usuario_Password, 10);
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(T_Usuario_Password, 10);
 
-    // Crear nuevo usuario con campos básicos
+    // Create the new user
     const newUser = new Usuario({
       T_Usuario_Nombre,
       T_Usuario_Apellido,
       T_Usuario_Email,
       T_Usuario_Password: hashedPassword,
-      T_Usuario_Rol: 'cliente', // Valor por defecto
-      T_Usuario_Estado: true // Activamos la cuenta por defecto
+      T_Usuario_Rol: 'cliente',
+      T_Usuario_Estado: true,
     });
 
     await newUser.save();
-
     res.status(201).json({
       success: true,
       message: 'Usuario registrado exitosamente',
@@ -147,10 +146,9 @@ exports.register = async (req, res, next) => {
         nombre: newUser.T_Usuario_Nombre,
         apellido: newUser.T_Usuario_Apellido,
         email: newUser.T_Usuario_Email,
-        rol: newUser.T_Usuario_Rol
-      }
+        rol: newUser.T_Usuario_Rol,
+      },
     });
-
   } catch (error) {
     next(error);
   }
