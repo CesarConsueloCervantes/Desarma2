@@ -29,7 +29,6 @@ export default function AboutPage() {
             <p style={styles.cardText}>
               Energía confiable para que tu equipo nunca te deje tirado.
             </p>
-            <a href="#" style={styles.link}>Explorar más →</a>
           </div>
 
           <div style={styles.card}>
@@ -38,7 +37,6 @@ export default function AboutPage() {
             <p style={styles.cardText}>
               Claridad, resistencia y compatibilidad garantizada.
             </p>
-            <a href="#" style={styles.link}>Conocer más →</a>
           </div>
 
           <div style={styles.card}>
@@ -47,7 +45,6 @@ export default function AboutPage() {
             <p style={styles.cardText}>
               Técnicos certificados listos para revivir tu dispositivo.
             </p>
-            <a href="#" style={styles.link}>Descubrir más →</a>
           </div>
         </section>
 
