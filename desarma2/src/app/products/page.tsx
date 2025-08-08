@@ -1,12 +1,13 @@
 'use client';
 
-import HeaderGuest from '@/components/HeaderGuest';
+import Header from '@/components/Header';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { getProductos } from '@/services/productoService';
 import { useCart } from '@/store/provider'; // 👈 Nuevo import
 import type { CSSProperties } from 'react';
+import Footer from '@/components/Footer';
 
 interface Producto {
   _id: string;
@@ -40,18 +41,19 @@ export default function ProductsPage() {
 
   // ✅ Nuevo handler funcional
   const handleAgregarAlCarrito = (producto: Producto) => {
-    addToCart({
-      id: producto._id,
-      name: producto.T_Producto_Nombre,
-      price: producto.T_Producto_Precio,
-      quantity: 1,
-    });
-    router.push('/car');
-  };
+  addToCart({
+    id: producto._id,
+    name: producto.T_Producto_Nombre,
+    price: producto.T_Producto_Precio,
+    quantity: 1,
+    image: producto.T_Producto_Imagen, // ✅ Esto es lo que faltaba
+  });
+  router.push('/car');
+};
 
   return (
     <div>
-      <HeaderGuest />
+      <Header />
       <main style={styles.container}>
         <h1 style={styles.title}>Productos Disponibles</h1>
         <div style={styles.grid}>
@@ -80,47 +82,54 @@ export default function ProductsPage() {
           )}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }
-
 const styles: { [key: string]: CSSProperties } = {
   container: {
+    width: '100%',
     maxWidth: '1200px',
-    margin: '60px auto',
-    padding: '20px',
+    margin: 'clamp(40px, 8vh, 60px) auto',
+    padding: 'clamp(16px, 4vw, 32px)',
     fontFamily: 'Arial, sans-serif',
   },
   title: {
-    fontSize: '24px',
+    fontSize: 'clamp(20px, 5vw, 28px)',
     textAlign: 'center',
     color: '#475B85',
-    marginBottom: '30px',
+    marginBottom: 'clamp(20px, 5vw, 30px)',
   },
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: '20px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: 'clamp(16px, 4vw, 24px)',
   },
   card: {
     border: '1px solid #ddd',
     borderRadius: '8px',
-    padding: '16px',
+    padding: 'clamp(16px, 4vw, 24px)',
     textAlign: 'center',
     backgroundColor: '#fff',
     boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   image: {
-    borderRadius: '6px',
+    maxWidth: '100%',
+    maxHeight: '250px',
+    borderRadius: '8px',
     objectFit: 'contain',
   },
   productName: {
-    fontSize: '16px',
+    fontSize: 'clamp(14px, 2.5vw, 16px)',
     marginTop: '12px',
     fontWeight: 'bold',
   },
   price: {
-    fontSize: '14px',
+    fontSize: 'clamp(13px, 2.5vw, 14px)',
     margin: '8px 0',
     color: '#333',
   },
@@ -128,9 +137,11 @@ const styles: { [key: string]: CSSProperties } = {
     backgroundColor: '#475B85',
     color: '#fff',
     border: 'none',
-    padding: '10px 14px',
-    fontSize: '14px',
+    padding: 'clamp(10px, 3vw, 12px) clamp(14px, 4vw, 18px)',
+    fontSize: 'clamp(13px, 2.5vw, 14px)',
     borderRadius: '4px',
     cursor: 'pointer',
+    marginTop: 'auto',
   },
 };
+

@@ -9,7 +9,7 @@ import {
   updateProveedor,
   deleteProveedor
 } from '@/services/proveedorService';
-import HeaderAdmin from '@/components/HeaderAdmin'; // ✅ Asegúrate que esta ruta sea correcta
+import HeaderAdmin from '@/components/HeaderAdmin';
 
 interface Proveedor {
   _id?: string;
@@ -64,9 +64,20 @@ export default function ProveedoresAdminPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!usuario?.id) {
-      console.log(usuario)
-      alert('Debes estar logueado para realizar esta acción');
+    if (!usuario?.id || typeof usuario.id !== 'string') {
+      alert('Usuario no válido. Debes estar logueado.');
+      return;
+    }
+
+    const nombreNormalizado = formData.C_Proveedor_Nombre.trim().toLowerCase();
+
+    const nombreDuplicado = proveedores.some((p) =>
+      p.C_Proveedor_Nombre.trim().toLowerCase() === nombreNormalizado &&
+      p._id !== editId
+    );
+
+    if (nombreDuplicado) {
+      alert('Ya existe otro proveedor con ese nombre');
       return;
     }
 
@@ -88,7 +99,8 @@ export default function ProveedoresAdminPage() {
       setEditId(null);
       resetForm();
       cargarProveedores();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error al guardar proveedor:', error?.response?.data || error.message);
       alert('Error al guardar proveedor');
     }
   };
@@ -126,7 +138,7 @@ export default function ProveedoresAdminPage() {
 
   return (
     <>
-      <HeaderAdmin /> {/* ✅ Header agregado */}
+      <HeaderAdmin />
       <div className="admin-container">
         <div className="admin-content">
           <aside className="sidebar">
@@ -138,6 +150,7 @@ export default function ProveedoresAdminPage() {
             <Link href="/admin/proovedoresAdmin" className="active">Proveedores</Link>
             <Link href="/admin/ventasAdmin">Ventas</Link>
             <Link href="/admin/enviosAdmin">Envios</Link>
+            <Link href="/admin/paqueteriaPage">Paqueterías</Link>
           </aside>
 
           <div className="main-content">
@@ -242,3 +255,4 @@ export default function ProveedoresAdminPage() {
     </>
   );
 }
+

@@ -1,23 +1,6 @@
-// store/authSlice.ts
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { login } from '@/services/authService';
-
-interface Usuario {
-  id: string;
-  nombre: string;
-  apellido: string;
-  email: string;
-  rol: string;
-  telefono?: string;
-  direccion?: {
-    calle?: string;
-    fraccionamiento?: string;
-    cp?: string;
-    ciudad?: string;
-    provinciaEstado?: string;
-    pais?: string;
-  };
-}
+import { Usuario } from '@/types/Usuario'; // ✅ Importa el tipo centralizado
 
 interface AuthState {
   user: Usuario | null;
@@ -33,16 +16,28 @@ const initialState: AuthState = {
 
 export const loginUser = createAsyncThunk(
   'auth/loginUser',
-  async ({ email, password }: { email: string; password: string }, thunkAPI) => {
+  async (
+    { email, password }: { email: string; password: string },
+    thunkAPI
+  ) => {
     try {
       const response = await login(email, password);
+
       if (response.success && response.usuario) {
-        return response.usuario;
+        // ✅ Transforma id → _id si es necesario
+        const usuarioTransformado: Usuario = {
+          ...response.usuario,
+          _id: response.usuario._id || response.usuario.id
+        };
+
+        return usuarioTransformado;
       } else {
         return thunkAPI.rejectWithValue('Credenciales inválidas');
       }
     } catch (err: any) {
-      return thunkAPI.rejectWithValue(err.response?.data?.message || 'Error de conexión');
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || 'Error de conexión'
+      );
     }
   }
 );

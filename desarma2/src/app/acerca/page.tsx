@@ -1,20 +1,25 @@
+
 'use client';
 
-import HeaderGuest from '@/components/HeaderGuest';
+import Header from '@/components/Header';
 import Image from 'next/image';
 import type { CSSProperties } from 'react';
+import Footer from '@/components/Footer';
 
 export default function AboutPage() {
   return (
-    <div>
-      <HeaderGuest />
+    <div style={styles.page}>
+      <Header />
 
       <main style={styles.container}>
         <section style={styles.hero}>
           <h4 style={styles.sectionLabel}>SOBRE NOSOTROS</h4>
           <h1 style={styles.title}>
-            Descubre la mejor opción para comprar piezas de celular con nosotros
+            Más que repuestos, construimos confianza.
           </h1>
+          <p style={styles.subtitle}>
+            En nuestro mundo, cada pieza cuenta. No vendemos productos: ofrecemos soluciones que restauran, mejoran y prolongan la vida de tus dispositivos. Con atención al detalle, calidad garantizada y un equipo que sabe lo que hace, somos el aliado que tu celular merece.
+          </p>
         </section>
 
         <section style={styles.cardsContainer}>
@@ -22,7 +27,7 @@ export default function AboutPage() {
             <Image src="/pieza1.png" alt="Batería" width={240} height={160} />
             <h3 style={styles.cardTitle}>Baterías de alta calidad</h3>
             <p style={styles.cardText}>
-              Lorem ipsum dolor sit amet, consectetur adipscing elit.
+              Energía confiable para que tu equipo nunca te deje tirado.
             </p>
             <a href="#" style={styles.link}>Explorar más →</a>
           </div>
@@ -31,7 +36,7 @@ export default function AboutPage() {
             <Image src="/pieza2.png" alt="Pantalla" width={240} height={160} />
             <h3 style={styles.cardTitle}>Pantallas de reemplazo</h3>
             <p style={styles.cardText}>
-              Las mejores pantallas de reemplazo y protección.
+              Claridad, resistencia y compatibilidad garantizada.
             </p>
             <a href="#" style={styles.link}>Conocer más →</a>
           </div>
@@ -40,7 +45,7 @@ export default function AboutPage() {
             <Image src="/placa.png" alt="Reparaciones" width={240} height={160} />
             <h3 style={styles.cardTitle}>Reparaciones especializadas</h3>
             <p style={styles.cardText}>
-              Expertos listos para ayudarte con tu dispositivo.
+              Técnicos certificados listos para revivir tu dispositivo.
             </p>
             <a href="#" style={styles.link}>Descubrir más →</a>
           </div>
@@ -65,31 +70,50 @@ export default function AboutPage() {
           </div>
         </section>
       </main>
+
+      <Footer />
     </div>
   );
 }
+
 const styles: { [key: string]: CSSProperties } = {
+  page: {
+    backgroundColor: '#0F172A',
+    minHeight: '100vh',
+    padding: '0 16px',
+    fontFamily: 'Arial, sans-serif',
+    color: '#F8FAFC',
+  },
   container: {
     maxWidth: '1200px',
     margin: '60px auto',
     padding: '20px',
-    fontFamily: 'Arial, sans-serif',
   },
   hero: {
     textAlign: 'center',
     marginBottom: '40px',
   },
   sectionLabel: {
-    color: '#475B85',
+    color: '#38BDF8',
     fontSize: '14px',
     letterSpacing: '1px',
     fontWeight: 600,
     textTransform: 'uppercase',
   },
   title: {
-    fontSize: '28px',
-    color: '#222',
+    fontSize: '32px',
+    color: '#F8FAFC',
     marginTop: '12px',
+    fontWeight: 'bold',
+  },
+  subtitle: {
+    fontSize: '16px',
+    color: '#CBD5E1',
+    marginTop: '16px',
+    maxWidth: '700px',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    lineHeight: '1.6',
   },
   cardsContainer: {
     display: 'flex',
@@ -100,27 +124,28 @@ const styles: { [key: string]: CSSProperties } = {
   },
   card: {
     flex: '1 1 280px',
-    border: '1px solid #ddd',
+    border: '1px solid #334155',
     borderRadius: '10px',
     padding: '16px',
-    backgroundColor: '#fff',
+    backgroundColor: '#1E293B',
     textAlign: 'center',
   },
   cardTitle: {
     fontSize: '18px',
     fontWeight: 'bold',
     marginTop: '12px',
+    color: '#38BDF8',
   },
   cardText: {
     fontSize: '14px',
-    color: '#666',
+    color: '#CBD5E1',
     marginTop: '8px',
   },
   link: {
     marginTop: '10px',
     display: 'inline-block',
     fontSize: '14px',
-    color: '#475B85',
+    color: '#38BDF8',
     textDecoration: 'none',
     fontWeight: 600,
   },
@@ -137,10 +162,11 @@ const styles: { [key: string]: CSSProperties } = {
   statNumber: {
     fontSize: '28px',
     fontWeight: 'bold',
-    color: '#475B85',
+    color: '#38BDF8',
   },
   statText: {
     fontSize: '14px',
-    color: '#555',
+    color: '#CBD5E1',
   },
 };
+

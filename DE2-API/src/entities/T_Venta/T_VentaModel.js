@@ -60,13 +60,13 @@ const ventaSchema = Schema({
 
     T_Venta_FormaPago: {
         type: String,
-        required: true,
+        required: false,
         maxlength: 20
     },
 
     T_Venta_Subtotal: {
         type: Number,
-        required: true,
+        required: false,
         min: 0,
         max: 9999999999
     },
@@ -81,7 +81,6 @@ const ventaSchema = Schema({
 
     T_Venta_Estatus: {
         type: Boolean,
-        required: true,
         default: false
     }
 
